@@ -1,78 +1,91 @@
 1. Revision History
 2. 2: ConOps
-   1.  Current system/situation
-      1. On paper calculations/hard coding specific systems
-      2. Real world scenario: analytics team
-      3. End user who knows the math/statistics, but may not know code
-   2.  Justification
-      1. Increased efficiency
-         1. Increased # of users
-         2. Decreased complexity of using system (less time per entry)
-   3. Operational Features
-      1. Tree saving / loading
-      2. Tree replicating
-      3. Tree forking
-   4. User Classes
-      1. Students (learning the material) as an educational tool
-      2. Admin 
-         1. (ability to save changes to master code)
+    1.  Current system/situation
+        1. On paper calculations/hard coding specific systems
+        2. Real world scenario: analytics team
+        3. End user who knows the math/statistics, but may not know code
+    2.  Justification
+        1. Increased efficiency
+        1. Increased # of users
+        2. Decreased complexity of using system (less time per entry)
+    3. Operational Features
+        1. Tree saving / loading
+        2. Tree replicating
+        3. Tree forking
+    4. User Classes
+        1. Students (learning the material) as an educational tool
+        2. Admin 
+            1. (ability to save changes to master code)
             1. Can edit user defined operations
             2. Take code change requests
-      3. Pro 
-         1. (switch from code to GUI, can fork
-         2. Can make code change request
-      4. Casual Viewer 
-         1. (heavy on GUI, maybe some text explaining processes)
-   5. Modes of Operation
-      1. Pro vs casual (code vs visual)
-      2. Admin vs user?
-* Read and write permissions on tree files?
-   1. Operational Scenarios
-      1. Use Cases
-         1. Use case 1: solar power
-            1. Description
-               1. This use case describes how a solar panel engineer would create a transformation tree and add multiple different operation nodes to the tree.
+        3. Pro 
+            1. (switch from code to GUI, can fork
+            2. Can make code change request
+        4. Casual Viewer 
+            1. (heavy on GUI, maybe some text explaining processes)
+    5. Modes of Operation
+        1. Pro vs casual (code vs visual)
+        2. Admin vs user?
+           * Read and write permissions on tree files?
+    6. Operational Scenarios
+        1. Use Cases
+            1. Use case 1: solar power
+                1. Description
+                    1. This use case describes how a solar panel engineer would create a transformation tree and add multiple different operation nodes to the tree.
             2. Actors
-               1. Solar panel engineer
+                1. Solar panel engineer
             3. Preconditions
-               1. The user has file creation and write permissions on the system and has access to at least 10MB of hard drive space (subject to change)
-               2.             4. Steps to complete task
+                1. The user has file creation and write permissions on the system and has access to at least 10MB of hard drive space (subject to change)
+                2. User must have understanding of most (if not all) operations and objects being operated on in the tree
+            4. Steps to complete task
             5. Post-conditions
-         2. Use case 2: educational tool
+        2. Use case 2: educational tool
             1. Description
-               1. When learning/managing transformation trees, it can be difficult for a learner novel to this field to understand the higher level processes. Using the GUI, students are given the ability to see how high level changes to a tree (such as exchanging operators) can affect functionality, and then bringing this knowledge to their lower level understanding of the tree (ex: coding).
+                1. When learning/managing transformation trees, it can be difficult for a learner novel to this field to understand the higher level processes. Using the GUI, students are given the ability to see how high level changes to a tree (such as exchanging operators) can affect functionality, and then bringing this knowledge to their lower level understanding of the tree (ex: coding).
             2. Actors
-               1. Students
-               2. Teachers
+                1. Students
+                2. Teachers
             3. Preconditions
-               1.             4. Steps to complete task
+                1. User must have understanding of most (if not all) operations and objects being operated on in the tree
+                2. This tool is for a user with both domain knowledge and an understanding of how the objects and operations relate in real-world settings
+                3. Student has been introduced to the concept of transformation trees
+                4. A teacher or other informed person is able to help the student receive data to be fed into the program for testing/training. Although a default data set will be provided, variety and topic-specific data will likely be the most helpful.                5. 
+            4. Steps to complete task
+                1. Obtain data/use data provided
+                2. Run data through the pipeline structured by the transformation tree
+                3. Observe how tree handles the data on GUI, then looking at the code that corresponds to this handling
+                4. Student connects the code to the GUI
+                5. Student makes a change to the transformation tree on the GUI
+                6. Student views how this change affects the output (if change is valid, else the student will be given a message describing why their change is invalid).
+                7. Student connects the GUI behavior to how the code handles the data
             5. Post-conditions
+                1. Student has now been able to understand and perform changes to a transformation tree from a high-level
 3. Specific Requirements
-   1. External interfaces (inputs and outputs)
-      1. Name of item
-      2. Description of purpose
-      3. Source of input or destination of output
-      4. Valid ranges of inputs and output
-      5. Units of measure
-      6. Data formats
-   2. Functions
-      1. Validity checks on the inputs
-         1. For pro user submit raw error messages
-         2. For casual user customized “friendlier messages”
-      2. Sequence of operations in processing inputs
-      3. Responses to abnormal situations, including error handling and recovery
-         1. Save state after every tree operation and before every fork
-      4. Relationship of outputs to inputs, including,
-         1. input/output sequences:
-         2. Formulas for input to output conversion
-   3. Usability Requirements (effectiveness/efficiency/satisfaction)
-   4. Performance requirements
-      1. Quantitative
-         1. Run time
-         2. Space complexity
-      2. Qualitative
-         1. Intuit
-         2. User test score
+    1. External interfaces (inputs and outputs)
+        1. Name of item
+        2. Description of purpose
+        3. Source of input or destination of output
+        4. Valid ranges of inputs and output
+        5. Units of measure
+        6. Data formats
+    2. Functions
+        1. Validity checks on the inputs
+            1. For pro user submit raw error messages
+            2. For casual user customized “friendlier messages”
+        2. Sequence of operations in processing inputs
+        3. Responses to abnormal situations, including error handling and recovery
+            1. Save state after every tree operation and before every fork
+        4. Relationship of outputs to inputs, including,
+            1. input/output sequences:
+            2. Formulas for input to output conversion
+    3. Usability Requirements (effectiveness/efficiency/satisfaction)
+    4. Performance requirements
+        1. Quantitative
+            1. Run time
+            2. Space complexity
+        2. Qualitative
+            1. Intuit
+            2. User test score
 4. References
 5. Acknowledgements
-   1. Possible future revisions
+    1. Possible future revisions
