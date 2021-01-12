@@ -65,6 +65,7 @@
         1. Name of item
         2. Description of purpose
         3. Source of input or destination of output
+            1. Sample input included
         4. Valid ranges of inputs and output
         5. Units of measure
         6. Data formats
