@@ -29,16 +29,25 @@
            * Read and write permissions on tree files?
     6. Operational Scenarios
         1. Use Cases
-            1. Use case 1: solar power
-                1. Description
-                    1. This use case describes how a solar panel engineer would create a transformation tree and add multiple different operation nodes to the tree.
-            2. Actors
-                1. Solar panel engineer
-            3. Preconditions
-                1. The user has file creation and write permissions on the system and has access to at least 10MB of hard drive space (subject to change)
-                2. User must have understanding of most (if not all) operations and objects being operated on in the tree
-            4. Steps to complete task
-            5. Post-conditions
+	1. Use case 1: solar power
+		1. Description
+			1. This use case describes how a solar panel engineer would create a transformation tree and add multiple different operation nodes to the tree.
+		2. Actors
+			1. Solar panel engineer
+		3. Preconditions
+			1. The user has file creation and write permissions on the system and has access to at least 10MB of hard drive space (subject to change)
+			2. User must have understanding of most (if not all) operations and objects being operated on in the tree.
+		4. Steps to complete task
+			1. Engineer obtains relevant data either from the system server or from another source.
+			2. The engineer gains file creation and write permissions on the system where the application will run.
+			3. The user starts up the transformation tree/pipeline software.
+			4. Creates the tree file.
+			5. Creates and adds a node for each desired data operation (operations, at this point, are all predefined).
+			6. User may test different operations/forks and charge tree structure as desired.
+			7. User defines and tests operation pipeline(s).
+			8. User saves (and exports?) transformation tree file.
+		5. Post-conditions
+			1. Engineer has a testable tree file with their defined tree structure and any pipelines that were saved.
         2. Use case 2: educational tool
             1. Description
                 1. When learning/managing transformation trees, it can be difficult for a learner novel to this field to understand the higher level processes. Using the GUI, students are given the ability to see how high level changes to a tree (such as exchanging operators) can affect functionality, and then bringing this knowledge to their lower level understanding of the tree (ex: coding).
