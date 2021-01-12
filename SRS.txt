@@ -60,6 +60,11 @@
                 7. Student connects the GUI behavior to how the code handles the data
             5. Post-conditions
                 1. Student has now been able to understand and perform changes to a transformation tree from a high-level
+		2. Student has been able to connect this high-level understanding to the low-level representation(code)
+		3. Teacher can customize the students interaction with the transformation tree by getting to select specific data to test on
+			1. specified for domain
+			2. specified for teaching specific principles regarding tree behavior (which can be arranged using specific data)
+		4. Student was able to understand from a high-level valid/invalid changes to a transformation tree without the confusion of seeing novel code		
 3. Specific Requirements
     1. External interfaces (inputs and outputs)
         1. Name of item
