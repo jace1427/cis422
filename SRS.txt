@@ -9,9 +9,17 @@
         1. Increased # of users
         2. Decreased complexity of using system (less time per entry)
     3. Operational Features
-        1. Tree saving / loading
-        2. Tree replicating
-        3. Tree forking
+        1. Create a new tree.
+        2. Add operators to the transformation tree, checking type compatibility of input/output of operators.
+        3. Replace a process step with a different operator.
+        4. Replicate a subtree.
+        5. Replicate a tree path.
+        6. Add a subtree to a node.
+        7. Load/Save a tree.
+        8. Load/Save a pipeline.
+        9. Execute a tree.
+        10. Execute a pipeline.
+        11. Fork a tree. 
     4. User Classes
         1. Students (learning the material) as an educational tool
         2. Admin 
@@ -24,9 +32,9 @@
         4. Casual Viewer 
             1. (heavy on GUI, maybe some text explaining processes)
     5. Modes of Operation
-        1. Pro vs casual (code vs visual)
-        2. Admin vs user?
-           * Read and write permissions on tree files?
+        1. Basic/Consumer Mode: Used by the Pro or casual user.
+        2. Developer Mode: Used by the administrator.
+        3. Education Mode: Used by teachers/students for intruction.
     6. Operational Scenarios
         1. Use Cases
 	1. Use case 1: solar power
