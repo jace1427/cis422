@@ -18,10 +18,10 @@ import datetime
 sns.set(rc={'figure.figsize': (11, 4)})
 
 
-def csv_has_timestamps(file_name: str, sample_size: int) -> bool:
+def csv_has_timestamps(file_name: str, sample_size: int) -> (bool, int, list):
     """
     Checks the if the first column of a csv file appears
-    to contain timestamps.
+    to contain timestamps. Refactored to include __csv_process_header functionality.
 
     Parameters
     ----------
@@ -32,12 +32,18 @@ def csv_has_timestamps(file_name: str, sample_size: int) -> bool:
     Returns
     -------
     bool - True if csv appears to have timestamps, False otherwise
+
+    int - number of header lines
+
+    list - list of column header strings
     """
 
     # keep track of how many entries pandas
     # can and can't parse as datetime
     confirmed_timestamps = 0
     confirmed_non_timestamps = 0
+    header_lines = 0
+    columns_list = ["Timestamp", "Value"]
 
     with open(file_name) as csvfile:
         for i in range(sample_size):
@@ -56,71 +62,20 @@ def csv_has_timestamps(file_name: str, sample_size: int) -> bool:
                 # parse the argument, this means we've encountered a non-timestamp entry
                 confirmed_non_timestamps += 1
 
+                # if the first line can't be parsed, until we confirm timestamps
+                # or not, take this line as the column headers
+                if header_lines == 0:
+                    columns_list = line.split(",")
+
+                # keep track of how many non-data lines
+                header_lines += 1
+
     # very simple check: if we encountered more timestamps than not,
     # the primary entry for the first column must be timestamps
     if confirmed_timestamps > confirmed_non_timestamps:
-        return True
+        return True, header_lines, columns_list
     else:
-        return False
-
-
-def __csv_process_header(file_name: str) -> (int, list):
-    """
-    Finds how many lines of a csv file are
-    taken up by the header(s).
-
-    NOTE: csv file should be tested for timestamps
-    with csv_has_timestamps()
-
-    Parameters
-    ----------
-    file_name - name of the csv file in the form of a string
-
-    Returns
-    -------
-    int - number of lines taken up by the header (0 if no header)
-    list - list of the names of each column (will be modified if there are too many columns)
-    """
-
-    has_header = False
-    header_lines = 0    # number of lines in the file before the data starts
-
-    with open(file_name, "r") as csvfile:
-
-        # set the top line string aside and focus on the top two lines
-        top_line = csvfile.readline()
-        previous_line = top_line
-        current_line = csvfile.readline()
-
-        # this loop will check if the first 4 characters of the string are the same
-        # (which they should be if we're seeing a stream of data points w/ time stamps)
-        while current_line:
-            if previous_line[:3] == current_line[:3]:
-
-                # if we've proven the existence of a header, we can now
-                # utilize the saved top line in the names_list array we
-                # pass to pandas.read_csv(), which will take the place
-                # of the column headers
-                if has_header:
-                    top_line = top_line.rstrip()
-                    names_list = top_line.split(',')
-
-                # if no header exists, the current protocol is
-                # to pass generic column names
-                else:
-                    names_list = ["Timestamp", "Value"]
-
-                break   # break when we find where the data begins
-
-            # if the latest two lines do not match, the file must have a header
-            # move on to comparing the next pair of lines
-            else:
-                has_header = True
-                previous_line = current_line
-                current_line = csvfile.readline()
-                header_lines += 1   # keep track of how many lines we go down
-
-    return header_lines, names_list
+        return False, header_lines, columns_list
 
 
 def csv_to_dataframe(file_name: str) -> pd.DataFrame:
@@ -141,9 +96,9 @@ def csv_to_dataframe(file_name: str) -> pd.DataFrame:
 
     # check if csv contains timestamps,
     # find where the data starts if so, raise error otherwise
-    if csv_has_timestamps(file_name, 50):
-        data_start, names_list = __csv_process_header(file_name)
-    else:
+    has_header, header_lines, columns_list = csv_has_timestamps(file_name, 50)
+
+    if not has_header:
         print(f"{file_name} does not appear to have timestamps")
         raise TypeError
 
@@ -151,13 +106,13 @@ def csv_to_dataframe(file_name: str) -> pd.DataFrame:
 
     # based on return from __csv_process_header(), move the
     # file pointer forward until we find the start of the data
-    for i in range(data_start):
+    for i in range(header_lines):
         file.readline()
 
     # finally, call the pandas library function
     data_frame = pd.read_csv(file,
                              header=None,
-                             names=names_list,
+                             names=columns_list,
                              index_col=None,
                              parse_dates=True)
 
