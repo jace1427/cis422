@@ -1,133 +1,215 @@
 ##################
-##    AUTHOR    ##
+#    AUTHORS     #
 ##################
 ##################
-## LANNIN NAKAI ##
+#  LANNIN NAKAI  #
+# JUSTIN SPIDELL #
 ##################
 
-                    #################
-                    ## DESCRIPTION ##
+#################
+#  DESCRIPTION  #
 ############################################################
-## This script creates the transformation tree from which ##
-## the user can customize the features of their pipeline  ##
+#  This script creates the transformation tree from which  #
+#  the user can customize the features of their pipeline   #
 ############################################################
 
-    ###########
-    ## TO DO ##
-    ###########
+###########
+#  TO DO  #
+###########
 ##################################################
-## - ADD TREE_STATES[] ARRAY IN WHICH TREES     ##
-## CAN BE SAVED (MAYBE DO IT IN DIFFERENT FILE) ##
-##                                              ##
-## - ADD CONNECTIVITY TO PIPELINE               ##
+#  - ADD TREE_STATES[] ARRAY IN WHICH TREES      #
+#  CAN BE SAVED (MAYBE DO IT IN DIFFERENT FILE)  #
+#                                                #
+#  - ADD CONNECTIVITY TO PIPELINE                #
 ##################################################
+import sys
 
 
 ####################
-##   TREE CLASS   ##
+#    NODE CLASS    #
 ####################
 
-class Tree():
-    # Tree (equivalent to multiple connected pipelines) class, which will hold nodes (functions of the pipeline)
-    
-    def __init__(self):
-        self.root = None
-        self.edit = 0
-
-    def change_parent(self, children, node):
-        # changes the parent of a list of children
-        # Function Parameters
-        #   - children : list of children
-        #   - node : node to be named parent of children
-        for child in children:
-            child.parent = node
-        return
-
-    
-    def insert_at(self, target, node, child = None):
-        # target is the node that the node named "node" wil
-        # Function Parameters:
-        #   - target : node to be the parent of the new child
-        #   - node : a new child to be attached the tree
-        #   - child : node that will become the child of node
-        # Return
-        #   - None
-
-        node.parent = target # set node as child of target
-
-        if isEmpty(target.children): # Case 1 : target has no children
-            target.children.append(node) #add the node to the target's childrens list
-            return
-
-        if child == None:  # Case 2 : child not specified
-            node.children = target.children # set the nodes children to the target's children
-            change_parent(node.children, node) # change the parent of target's children to node
-            target.children = [node] # make node target's only child
-            return
-        
-        # Case 3 : child specified
-        node.children = [child] # set the nodes children to the child
-        target.children.pop(child) # remove child from targets children
-        child.parent = node # set the childs parent to node
-        return
- 
-    def replace(self, target, node):
-        # target is the node that the node named "node" will replace in the tree
-        # Function Parameters:
-        #   - target : node to be replace
-        #   - node : a new node to be attached the tree
-        # Return
-        #   - None
-        
-        # ALTERNATIVELY, TRY TESTING WITH JUST THIS LINE FOR THE FUNCTION: target.func = node.func
-        
-        if !search(target):
-            printf("target node {} does not exist \n", target)
-            return
-
-        node.parent = target.parent # replace parents of node with parents of target
-       
-        target.parent.children.append(node) # add node to target's parent's childrens list
-        target.parent.children.pop(target) # remove target from its parent's children list
-        if isEmpty(target.children):
-            return
-
-        node.children = target.children # let node take target's children
-        change_parent(node.children, node) # set node the the target's childrens' parent
-        return
-
-    def search(self, func, start = self.root):
-        # search the tree for a specified node
-        # Function Parameters:
-        #   - func : the function we are searching for
-        #   - start : node to be searched from in the tree
-        # Return
-        #   - Boolean : True if found, else False
-
-        if start.func != func: # Case 1 : node is not at start
-            if !isEmpty(start.children): # Case 2 : There are still children to check for node in
-                for child in start.children:
-                    result = self.search(func, child) #recursively search through all branches
-                    if result != False: # Case 3 : Node has been found
-                        return True
-        else: # Case 4 : Node is at start
-            return start # if start.func == func
-        
-        return False # Case 5 : failure to find node
-
-
-####################
-##   NODE CLASS   ##
-####################
 
 class Node():
-    # Node class will hold the functions as well as its relative position in relation to pipelines
+    """A Node
 
-    def __init__(self, func):
-        self.func = func # func is an identifier and useful data for pipeline execution
-        self.parent = None
-        self.children = [] # children is held as a list since each node can have multiple children in an n-ary tree
+    ...
+
+    Attributes
+    ----------
+    num : int
+        Number identification
+    func : function
+        The Node's function
+    parent : Node
+        Pointer to the parent Node
+    children : list[Node]
+        List of pointers to children Nodes
+
+    Methods
+    -------
+    None
+    """
+
+    def __init__(self, num, func, parent=None):
+        self.num = num
+        self.func = func
+        self.parent = parent
+        self.children = []
+
+    def __repr__(self):
+        return f"{self.num}: {self.children}"
 
 
+####################
+#    TREE CLASS    #
+####################
 
 
+class Tree():
+    """Binary Search Tree.
+
+    ...
+
+    Attributes
+    ----------
+    root : Node
+        A pointer to the root Node of the Tree
+    edit: Bool
+        Bool repersenting whether or not the tree can be edited
+    ctr: int
+        Abritrary number for assigning id's to the Nodes
+
+    Methods
+    -------
+    search(target: int) -> Node or None:
+        Searches the tree for target, returns Node if found, otherwise None
+    insert(func: function, parent: int) -> None:
+        Creates a new node with func to be inserted as a child of parent
+    delete(node: int) -> None:
+        Deletes the given Node, children are removed
+    replace(node: Node, func: function) -> None:
+        Replaces the function of the given Node with func
+    traverse() -> list:
+        Returns a preorder traversal of the Tree as a list
+    """
+
+    def __init__(self):
+        self.root = None
+        self.edit = True
+        self.ctr = 0
+
+    def __repr__(self):
+        return self.root.__repr__()
+
+    def _searcher(self, target: int, curr: Node) -> None or Node:
+        """Search helper method"""
+        if curr.num == target:
+            return curr
+
+        for child in curr.children:
+            tmp = self._searcher(target, child)
+            if tmp is not None:
+                return tmp
+
+        return None
+
+    def search(self, target: int) -> None or Node:
+        """Searches the tree for target, returns Node if found, otherwise None
+
+        Parameters
+        ----------
+        target : int
+            The number id of the node to be found
+
+        Returns
+        -------
+        Description of the return value
+        """
+        curr = self.root
+
+        return self._searcher(target, curr)
+
+    def insert(self, func: 'function', parent=None) -> None:
+        """Creates a new node with function func to be inserted
+        as a child of parent
+
+        Parameters
+        ----------
+        func : function
+            function for new node to have
+        parent : int
+            parent of new Node, if None Node is inserted as the root
+
+        Returns
+        -------
+        None
+        """
+        if parent is not None:
+            parent_node = self.search(parent)
+            if parent_node is None:
+                sys.stderr.write(f"[ERROR]: Node ({parent}) not found\n")
+                return
+            node = Node(self.ctr, func, parent_node)
+            self.ctr += 1
+            parent_node.children.append(node)
+        else:
+            node = Node(self.ctr, func)
+            self.ctr += 1
+            self.root = node
+        return
+
+    def delete(self, node: int) -> None:
+        """Deletes the given Node, children are removed
+
+        Parameters
+        ----------
+        node : int
+            Node to be deleted
+
+        Returns
+        -------
+        None
+        """
+        node = self.search(node)
+        node.parent.children.remove(node)
+        return
+
+    def replace(self, node: int, func: 'function') -> None:
+        """Replaces the function of the given Node with func
+
+        Parameters
+        ----------
+        node : int
+            Node to be edited
+        func : function
+            function to be inserted
+
+        Returns
+        -------
+        None
+        """
+        node = self.search(node)
+        node.func = func
+        return
+
+    def _preorder(self, curr: Node, result: list) -> list[int]:
+        if curr:
+            result.append(curr.num)
+            for child in curr.children:
+                self._preorder(child, result)
+
+    def traverse(self) -> list[int]:
+        """Returns a preorder traversal of the Tree as a list
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        Returns a list of ints
+        """
+        result = []
+        self._preorder(self.root, result)
+        return result
