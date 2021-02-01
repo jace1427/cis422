@@ -30,72 +30,105 @@ from statsmodels.tsa.arima.model import ARIMA
 
 
 # data = pd.read_csv() # get timeseries data
+class Pipeline():
 
+    def __init__(self, name):
+        
+        self.name = name
+        # will be used as an identifier for the pipeline
 
-def make_pipeline():
-    # makes a pipeline, a list that will execute functions sequentially
-    #
-    # Function Parameters
-    #   - None
-    # Returns
-    #   - Empty list
+        self.pipeline = []
+        # pipeline, a list that will execute functions sequentially
+        
+        self.saved_states = []
+        # used for docmenting the history of the pipelines composition/formation
 
-    pipeline = []
-    return pipeline
+    def save_pipeline(self):
+        # saves the current pipeline to the saved states history
+        # Function Paramters
+        #       - None
+        # Returns
+        #       - None
 
-def add_to_pipeline(pipeline, func):
-    # adds function(s) to pipeline if it can connect to the end of the pipeline
-    #
-    # Function Parameters
-    #       - pipeline : list holding list of functions to be executed
-    #       - func  : function to be added to the pipeline
-    # Returns
-    #       - None
-    
-    if len(func) > 1: # Case 1: func is a list
-        for function in func:
-            if functions_connect(pipeline[-1], function): # before appending function, make sure it
-                pipeline.append(function) # will not have invalid input (disallowing it from the pipeline)
+        self.saved_states.append(self.pipeline)
+
+    def add_to_pipeline(self, func):
+        # adds function(s) to pipeline if it can connect to the end of the pipeline
+        #
+        # Function Parameters
+        #       - pipeline : list holding list of functions to be executed
+        #       - func  : function to be added to the pipeline
+        # Returns
+        #       - None
+        
+        if len(func) > 1:
+        # Case 1: func is a list
+            
+            for function in func:
+            
+                if functions_connect(self.pipeline[-1], function): 
+                # before appending function, make sure it
+                
+                    self.pipeline.append(function) 
+                    # will not have invalid input (disallowing it from the pipeline)
+                
+                else:
+                    raise ValueError
+                    printf("Sorry, but it seems that {} does not fit into the pipeline. Check {} input and make sure it matches {}'s output", function, function, pipeline[-1])
+        else: 
+        # Case 2: func is not a list
+            
+            if functions_connect(self.pipeline[-1], function):
+            
+                self.pipeline.append(func)
+            
             else:
-                printf("Sorry, but it seems that {} does not fit into the pipeline. Check {} input and make sure it matches {}'s output", function, function, pipeline[-1])
-    else: # Case 2: func is not a list
-        if functions_connect(pipeline[-1], function):
-            pipeline.append(func)
-        else:
-            printf("Sorry, but it seems that {} does not fit into the pipeline. Check {} input and make sure it matches {}'s output", function, function, pipeline[-1])
-    return
- 
 
-def functions_connect(func_out, func_in):
-    # Checks to make sure that the preceding funcions output matching the proceeding functions input
-    #
-    # Function Parameters
-    #       - func_out : function data is being returned from
-    #       - func_in  : function data is being stored to
-    # Returns
-    #       - True if functions match, else returns False
-    
-    if func_out.argc == func_in.argc:
-        return True
-    return False
+                raise ValueError
+                # message : printf("Sorry, but it seems that {} does not fit into the pipeline. Check {} input and make sure it matches {}'s output", function, function, pipeline[-1])
+        
+        return
+     
 
-def run_pipeline(data, pipeline):
-    # Executes the functions stored in the pipeline sequentially (from 0 -> pipeline size)
-    #
-    # Function Parameters
-    #       - pipeline : list of functions
-    # Returns
-    #       - Data ran through pipeline, if successful
-    #       - -1 , if unsuccessful
+    def functions_connect(self, func_out, func_in):
+        # Checks that the preceding funcions output matching the proceeding functions input
+        # The check is done by referencing a database of what functions 
+        #
+        # Function Parameters
+        #       - func_out : name of function data is being returned from
+        #       - func_in  : function data is being stored to
+        # Returns
+        #       - True if functions match, else returns False
+        
+        if func_in in func_dict.funcs[func_out]:
+        # search database for function matches
+            
+            return True
+        
+        return False
 
-
-    for function in pipeline: # run the data through each function
-        inter_data = function(data) # use the output of the previous function as the input for the next
-        data = inter_data
-    return data
+    def run_pipeline(self, data):
+        # Executes the functions stored in the pipeline sequentially (from 0 -> pipeline size)
+        #
+        # Function Parameters
+        #       - data : timeseries data to be processed
+        # Returns
+        #       - Data ran through pipeline, if successful
+        #       - -1 , if unsuccessful
 
 
-       
+        for function in self.pipeline: 
+        # run the data through each function
+            
+            inter_data = function(data) 
+            # use the output of the previous function as the input for the next
+            
+            data = inter_data
+        
+        return data
+
+
+           
 
 
 
