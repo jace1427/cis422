@@ -1,0 +1,7 @@
+Python Library Dependencies:
+    pandas
+    matplotlib
+    seaborn
+    statsmodels
+    anaconda
+    unittest

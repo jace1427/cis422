@@ -25,11 +25,11 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import matplotlib.dates as mdates
-from statsmodels.graphics.tsaplots import plot_pcaf, plot_acf
+# from statsmodels.graphics.tsaplots import plot_pcaf, plot_acf
 from statsmodels.tsa.arima.model import ARIMA
 
 
-data = pd.read_csv() # get timeseries data
+# data = pd.read_csv() # get timeseries data
 
 
 def make_pipeline():
