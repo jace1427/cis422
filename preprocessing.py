@@ -178,7 +178,10 @@ def __split_data_usage(perc_training: float, perc_valid: float, perc_test: float
 		raise ValueError
 
 
-def split_data(ts: pd.DataFrame, perc_training: float, perc_valid: float, perc_test: float):
+def split_data(ts: pd.DataFrame,
+			   perc_training: float,
+			   perc_valid: float,
+			   perc_test: float) -> (pd.DataFrame, pd.DataFrame, pd.DataFrame):
 	"""
 	Splits a time series into training, validation, and testing according to the given
 	percentages.
@@ -219,17 +222,17 @@ def split_data(ts: pd.DataFrame, perc_training: float, perc_valid: float, perc_t
 		train_end = train_start + (round(perc_training * main_set_size))
 	else:
 		train_end = train_start + (round(perc_training * main_set_size) - 1)
-	train_set = clip(data, train_start, train_end)
+	train_set = clip(ts, train_start, train_end)
 
 	# validation set comprises first part of the remaining percentage where training set stopped
 	valid_start = train_end + 1
 	valid_end = valid_start + (round(perc_valid * main_set_size) - 1)
-	valid_set = clip(data, valid_start, valid_end)
+	valid_set = clip(ts, valid_start, valid_end)
 
 	# test set comprises remaining percentage of the main set where validation set stopped
 	test_start = valid_end + 1
 	test_end = test_start + (round(perc_test * main_set_size) - 1)
-	test_set = clip(data, test_start, test_end)
+	test_set = clip(ts, test_start, test_end)
 
 	return train_set, valid_set, test_set
 
