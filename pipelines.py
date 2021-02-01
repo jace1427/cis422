@@ -32,7 +32,7 @@ from statsmodels.tsa.arima.model import ARIMA
 # data = pd.read_csv() # get timeseries data
 class Pipeline():
 
-    def __init__(self, name):
+    def __init__(self, name: str):
         
         self.name = name
         # will be used as an identifier for the pipeline
@@ -43,7 +43,7 @@ class Pipeline():
         self.saved_states = []
         # used for docmenting the history of the pipelines composition/formation
 
-    def save_pipeline(self):
+    def save_pipeline(self) -> None:
         # saves the current pipeline to the saved states history
         # Function Paramters
         #       - None
@@ -52,7 +52,7 @@ class Pipeline():
 
         self.saved_states.append(self.pipeline)
 
-    def add_to_pipeline(self, func):
+    def add_to_pipeline(self, func) -> None:
         # adds function(s) to pipeline if it can connect to the end of the pipeline
         #
         # Function Parameters
@@ -90,7 +90,7 @@ class Pipeline():
         return
      
 
-    def functions_connect(self, func_out, func_in):
+    def functions_connect(self, func_out : str, func_in : str) -> bool:
         # Checks that the preceding funcions output matching the proceeding functions input
         # The check is done by referencing a database of what functions 
         #
@@ -107,7 +107,7 @@ class Pipeline():
         
         return False
 
-    def run_pipeline(self, data):
+    def run_pipeline(self, data : "database") -> "database" or bool:
         # Executes the functions stored in the pipeline sequentially (from 0 -> pipeline size)
         #
         # Function Parameters
