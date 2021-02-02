@@ -18,6 +18,9 @@ import seaborn as sns
 import os
 from statsmodels.graphics.tsaplots import plot_pacf, plot_acf
 from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_absolute_error
+from sklearn.metrics import r2_score
 import datetime
 # Use seaborn style defaults and set the default figure size
 sns.set(rc={'figure.figsize': (11, 4)})
@@ -87,6 +90,7 @@ def mse(y_test: pd.DataFrame, y_forecast: pd.DataFrame):
 
 	//TODO: implement this function.
 	"""
+	return ((y_forecast - y_test)**2).mean()
 
 def mape(y_test: pd.DataFrame, y_forecast: pd.DataFrame):
 	"""
@@ -94,9 +98,11 @@ def mape(y_test: pd.DataFrame, y_forecast: pd.DataFrame):
 
 	//TODO: implement this function.
 	"""
+	return np.mean(np.abs((y_forecast = y_test) / y_test)) *100
 def smape(y_test: pd.DataFrame, y_forecast: pd.DataFrame):
 	"""
 	Computes the SMAPE error of the two time series
 
 	//TODO: implement this function.
 	"""
+	return 2.0 * np.mean(np.abs(y_forecast - y_true) / (np.abs(y_forecast) + np.abs(y_test))) * 100
