@@ -3,7 +3,7 @@ Preprocessing funtions for Project 1 CIS 422.
 
 Authors: - Add your name if you help with something!
 		 - Riley Matthews
-		 - 
+		 - Evan Podrabsky
 
 """
 
@@ -16,9 +16,12 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import seaborn as sns
 import os
+import datetime
+import math
+
 from statsmodels.graphics.tsaplots import plot_pacf, plot_acf
 from statsmodels.tsa.arima.model import ARIMA
-import datetime
+from scipy import stats
 
 # Imports from Evan
 import sklearn
@@ -58,8 +61,15 @@ def impute_missing_data(ts: pd.DataFrame, method: str) -> pd.DataFrame:
 		- mode: replace NaN with the mode
 
 	//TODO: Research ideas proposed by Kantz via project1 references.
-	        TEST this method! Need to create datasets with missing values.
+	        TEST this method! Need to create MORE datasets with missing values.
 	"""
+
+	# if there is no missing data. report and return original ts
+	if ts.isnull().any().any() == False:
+		print("impute_missing_data: ts has no missing data.")
+		return ts
+
+	# check with method the user requested
 	if method == 'backfill':
 		new_ts = ts.fillna(method='bfill')
 	elif method == 'forwardfill':
@@ -69,33 +79,79 @@ def impute_missing_data(ts: pd.DataFrame, method: str) -> pd.DataFrame:
 	elif method == 'median':
 		new_ts = ts.fillna(ts.median())
 	elif method == 'mode':
-		new_ts = ts.fillna(ts.mnode())
+		new_ts = ts.fillna(ts.mode())
 	else:
 		print("Method not supported")
 
 	return new_ts
 
-
 def impute_outliers(ts: pd.DataFrame) -> pd.DataFrame:
 	"""
 	Outliers are disparate data that we can treat as missing data. Use the same procedure
 	as for missing data (sklearn implements outlier detection).
-
-	//TODO: implement this function.
 	"""
+
+	# generate list of z scores
+	z_scores = stats.zscore(ts.iloc[:,1], nan_policy='omit')
+
+	# first we must identify the outliers and mark them as NaN
+	for i in range(len(ts.index)):
+		if abs(z_scores[i]) > 2:
+			ts.iloc[i, 1] = np.NaN
+
+	# now we impute the missing data
+	return impute_missing_data(ts, 'backfill')
 
 
 def longest_continuous_run(ts: pd.DataFrame) -> pd.DataFrame:
-	"""
-	Isolates the most extended portion of the time series without missing data.
+	"""Isolates the most extended portion of the time series without missing data."""
 
-	//TODO: implement this function.
-	"""
+	# the longest 
+	start = 0
+	end = 0
+	longest = 0
+
+	# the current
+	start_curr = 0
+	count = 0
+
+	# visit each value and check if it is NaN or not
+	for i in range(len(ts.index)):
+		if pd.isna(ts.iloc[i, 1]):
+			# we found a NaN value
+			if count > longest:
+				# This is a new longest run. Save it
+				start = start_curr
+				end = i - 1
+				longest = count
+
+				# reset current run
+				start_curr = i + 1
+				count = 0
+			else:
+				# we did not find a new longest run. reset current run
+				start_curr = i + 1
+				count = 0
+		else:
+			# found data
+			count += 1
+	
+	# in the event the longest run of data is at the end of the dataFrame
+	if count > longest:
+		start = start_curr
+		end = i
+		longest = count
+
+	# return the clip of the ts with the start and end values of the longest run
+	return clip(ts, start, end)
 
 
 def clip(ts: pd.DataFrame, starting_date: int, final_date: int) -> pd.DataFrame:
 	"""
 	This function clips the time series to the specified period's data.
+
+	// TODO: the index numbers of the returned clip are the index numbers from the
+			 original ts. Might introduce some bugs, test in future.
 	"""
 
 	# The iloc pandas dataFrame method supports slicing.
@@ -139,19 +195,26 @@ def standardize(ts: pd.DataFrame) -> pd.DataFrame:
 
 
 def logarithm(ts: pd.DataFrame) -> pd.DataFrame:
-	"""
-	Produces a time series whose elements are the logarithm of the original elements.
+	"""Produces a time series whose elements are the logarithm of the original elements."""
 
-	//TODO: implement this function.
-	"""
+	# visit each entry
+	for i in range(len(ts.index)):
+		# grab the value, compute ln(x), and store it back.
+		x = ts.iloc[i, 1]
+		ts.iloc[i, 1] = math.log(x)
 
+	return ts
 
 def cubic_root(ts:pd.DataFrame) -> pd.DataFrame:
-	"""
-	Produces a time series whose elements are the original elements' cubic root.
+	"""Produces a time series whose elements are the original elements' cubic root."""
 
-	//TODO: implement this function.
-	"""
+	# visit each entry
+	for i in range(len(ts.index)):
+		# grab the value, compute x^(1/3), and store it back
+		x = ts.iloc[i, 1]
+		ts.iloc[i, 1] = x**(1./3.)
+
+	return ts
 
 
 def __split_data_usage(perc_training: float, perc_valid: float, perc_test: float):
@@ -178,7 +241,10 @@ def __split_data_usage(perc_training: float, perc_valid: float, perc_test: float
 		raise ValueError
 
 
-def split_data(ts: pd.DataFrame, perc_training: float, perc_valid: float, perc_test: float):
+def split_data(ts: pd.DataFrame,
+			   perc_training: float,
+			   perc_valid: float,
+			   perc_test: float) -> (pd.DataFrame, pd.DataFrame, pd.DataFrame):
 	"""
 	Splits a time series into training, validation, and testing according to the given
 	percentages.
@@ -219,17 +285,17 @@ def split_data(ts: pd.DataFrame, perc_training: float, perc_valid: float, perc_t
 		train_end = train_start + (round(perc_training * main_set_size))
 	else:
 		train_end = train_start + (round(perc_training * main_set_size) - 1)
-	train_set = clip(data, train_start, train_end)
+	train_set = clip(ts, train_start, train_end)
 
 	# validation set comprises first part of the remaining percentage where training set stopped
 	valid_start = train_end + 1
 	valid_end = valid_start + (round(perc_valid * main_set_size) - 1)
-	valid_set = clip(data, valid_start, valid_end)
+	valid_set = clip(ts, valid_start, valid_end)
 
 	# test set comprises remaining percentage of the main set where validation set stopped
 	test_start = valid_end + 1
 	test_end = test_start + (round(perc_test * main_set_size) - 1)
-	test_set = clip(data, test_start, test_end)
+	test_set = clip(ts, test_start, test_end)
 
 	return train_set, valid_set, test_set
 
