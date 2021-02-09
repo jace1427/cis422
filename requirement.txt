@@ -1,0 +1,8 @@
+pandas
+matplotlib
+seaborn
+statsmodels
+anaconda
+unittest
+pep8
+autopep8
