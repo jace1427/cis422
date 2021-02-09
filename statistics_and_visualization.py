@@ -87,21 +87,34 @@ def normality_test(ts: pd.DataFrame):
 def mse(y_test: pd.DataFrame, y_forecast: pd.DataFrame):
 	"""
 	Computes the MSE error of two time series.
+	
+	MSE is Mean Squared Error, which is base of RMSE, Root Mean Squared Error
 
 	//TODO: implement this function.
 	"""
 	return ((y_forecast - y_test)**2).mean()
 
+
 def mape(y_test: pd.DataFrame, y_forecast: pd.DataFrame):
 	"""
 	Computes the MAPE error of two time series
 
+	MAPE is Mean Absolute Percentage Error, commonly used KPIs to measure forecast accuracy
+
+	MAPE is sum of individual absolute errors divided by the demand.
+
 	//TODO: implement this function.
 	"""
 	return np.mean(np.abs((y_forecast = y_test) / y_test)) *100
+
+
 def smape(y_test: pd.DataFrame, y_forecast: pd.DataFrame):
 	"""
 	Computes the SMAPE error of the two time series
+
+	SMAPE is Symmetric mean absolute percentage Error, which  
+	the absolute difference between actual value and forecast value
+	is divided by half the sum of absolute values of the actual value and forecast value.
 
 	//TODO: implement this function.
 	"""
