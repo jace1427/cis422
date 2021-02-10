@@ -473,26 +473,29 @@ def design_matrix(ts: pd.DataFrame, input_index: list, output_index: list) -> li
         output_index : list
             list of positions in timeseries to be forecasting models desired output
     """
+    window = 5
+
+    x = []
+    y = []
+
+    for i in range(len(input_index)):
+        x.append(ts.iloc[input_index[i] - i - window:input_index[i] - i].values)
+        y.append(ts.iloc[output_index[i] - i - window:output_index[i] - i + 1].values)
     
-   
-    input_array = []
-    output_array = []
-        
-    t = max(input_array)
-    stop_point = max(output_array) - stop_point
+    x = np.vstack(x)
+    y = np.concatenate(y)
 
-    for t in range(ts.index):
+    assert x.shape == (num_samples, window)
+    assert len(y) == len(input_index)
 
-        for index in input_index:
-            input_array.append(ts.data[t - index])
-
-        for indec in output_index:
-            output_array.append(ts.data[t + indec])
-              
-    return pd.DataFrame(data = [input_array, output_array])
+    lr = LinearRegression(fit_intercept=False)
+    lr = lr.fit(x,y)
+    y_pred = lr.predict(x)
     
+    return y_pred
 
-def design_matrix_2(ts: list, mo: int, mi: int, to: int, ti: int):
+
+def design_matrix_2(ts: pd.DataFrame, mo: int, mi: int, to: int, ti: int):
     """
     See how well linear regressions determine the model fits
 
@@ -515,17 +518,24 @@ def design_matrix_2(ts: list, mo: int, mi: int, to: int, ti: int):
 
         Return
         ----------
-        score???
-    ````"""    
-         
-    Xi = input_array[:, np.newaxis]
-    Xo = output_array[:, np.newaxis]
+        Design Matrix : pd.DataFrame
+    """    
     
-        
-    model = LinearRegression(fit_intercept=True)
+    start = ts[0][0]
+    middle = ts[mi][0]
+    end = ts[mi+mo][0]
 
-    Xi = mi[:, np.newaxis]
-    Xo = mo[:, np.newaxis]
+    window = 5
+
+    for i in range(to - ti):
+        
+        full = ts.iloc[start:end]
+        train = ts.iloc[middle - i - window:middle - i]
+        predict = ts.iloc[middle - i:middle - i + 1]
+
+    return full
+
+    
       
 
   
