@@ -21,7 +21,7 @@
 ##################################################
 
 #############
-## IMPORTS ##
+#  IMPORTS  #
 #############
 
 import sys
@@ -186,44 +186,32 @@ class Tree():
         None
         """
         if parent is not None:
-        
             parent_node = self.search(parent)
             # find parent node
-            
             if parent_node is None:
-            
                 sys.stderr.write(f"[ERROR]: Node ({parent}) not found\n")
-                raise ValueError  
-                # or some kind of error here to signal main
+                raise ValueError
                 return
 
-
-            node = Node(self.ctr, func,io_type, func_args, parent_node)
-            
-            if not self.match(parent_node, node):
+            node = Node(self.ctr, func, io_type, func_args, parent_node)
             # if the node does not fit the parent function
-
-                print("node cannot be attatched to targeted parent (invalid matching of args)")
+            if not self.match(parent_node, node):
+                sys.stdout.write("Node cannot be attatched to targeted parent")
+                sys.stdout.write(" invalid matching of args)\n")
                 return
-            
+
             self.ctr += 1
             parent_node.children.append(node)
-        
-        else:
+
         # If parent is not specified, we make it the root
-            
+        else:
             node = Node(self.ctr, func, io_type, func_args)
             self.ctr += 1
-            
-            if self.root != None:
-                
-                for child in self.root.children:
+            if self.root is not None:
                 # Make our node the root's childrens' new parent
-
+                for child in self.root.children:
                     child.parent = node
-
             self.root = node
-                
         return
 
     def match(self, parent: Node, child: Node) -> bool:
@@ -243,17 +231,14 @@ class Tree():
         ---------
         bool
         """
-        
+        # check that the childs output matches the functions input
         if parent.io_type[1] == child.io_type[0]:
-            # check that the childs output matches the functions input
-            
             return True
-        
+
         return False
 
     def get_args(self, parent: Node, child: Node) -> list:
-        """
-        Gets function arguments the previous node does not fulfill
+        """Gets function arguments the previous node does not fulfill
 
         Parameters
         -----------
@@ -268,19 +253,16 @@ class Tree():
         ---------
         list : holding the arguments for our function
         """
-        args = []
         # List of arguments to be added to the child function initialization
+        args = []
 
         for item in inspect.signature(child.func).annotation:
-            
-            if item not in inspect.signature(parent.func).return_annotation:
             # if the argument isn't filled out by parent's return parameter(s)
-        
-                arg = input("Please enter argument for {} : ".format(item))
+            if item not in inspect.signature(parent.func).return_annotation:
+                arg = input(f"Please enter argument for {item} : ")
                 args.append(item)
-        
-        return args
 
+        return args
 
     def delete(self, node: int) -> None:
         """Deletes the given Node, children are removed
@@ -332,14 +314,14 @@ class Tree():
         """
         if node is None:
             return
-        
+
         self.string = self.string + self.root.func + self.root.num
-        
+
         for child in node.children:
             self.serialize(child, self.string)
-        
+
         self.string = self.string + ')'
-        
+
         return
 
     def deserialize(self, node, saved_string) -> int:
@@ -357,7 +339,6 @@ class Tree():
         -------
         int : 1 if success , 0 for failure
         """
-
         string = saved_string[0]
         saved_string = saved_string[1:]
         # basically popping the string
@@ -387,14 +368,14 @@ class Tree():
         ----------
         None
         """
-        self.serialize(self.root)
         # save the serialized string
-        
-        self.saved_states.append(self.string)
+        self.serialize(self.root)
+
         # reset the trees string for the next save
-        
+        self.saved_states.append(self.string)
+
         self.string = ""
-        
+
         return
 
     def restore_tree(self, state_number) -> None:
@@ -414,9 +395,8 @@ class Tree():
 
         return
 
-
     def _preorder(self, curr: Node, result: list) -> list:
-        """ stores the tree as a list of nodes in preorder
+        """Stores the tree as a list of nodes in preorder
 
         Parameters
         ----------
@@ -431,7 +411,6 @@ class Tree():
         result : list
             list we store the preordering on
         """
-
         if curr:
             result.append(curr.num)
             for child in curr.children:
