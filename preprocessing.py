@@ -52,7 +52,7 @@ def denoise(ts: pd.DataFrame, window: int) -> pd.DataFrame:
 
     Returns
     -------
-    ts_mean: 
+    ts_mean:
         a pandas DataFrame containing the modified time series data.
     """
 
