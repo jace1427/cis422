@@ -340,10 +340,23 @@ def standardize(ts: pd.DataFrame) -> pd.DataFrame:
 
     Returns
     -------
-    new_ts: pd.DataFrame
+    ts: pd.DataFrame
         a pandas DataFrame containing the standardized time series data.
     """
 
+    # find the mean
+    mean = np.mean(ts['Value'])
+
+    # find the standard deviation
+    std = np.std(ts['Value'])
+
+    # visit each data entry and standardize it
+    for i in range(len(ts.index)):
+        data = ts.iloc[i, 1]
+        standardized = (data - mean)/(std)
+        ts.iloc[i, 1] = standardized
+
+    return ts
 
 def logarithm(ts: pd.DataFrame) -> pd.DataFrame:
     """
