@@ -1,7 +1,6 @@
 # README
 
 ---
-
 ## INTRODUCTION
 
 This library is designed for Data Scientists, the main functionallity is as follows:
@@ -19,7 +18,6 @@ This library is designed for Data Scientists, the main functionallity is as foll
 * A Pipeline Class, to be made from a tree that can execute the functions in the tree across data
 
 ---
-
 ## INSTALLATION
 
 Install [Docker](https://www.docker.com/get-started)
@@ -29,19 +27,16 @@ Run this in a terminal: ```docker build -t <anyname> .```
 This will automatically install any requirements and create a new build.
 
 ---
-
 ## TO USE
 
 After installing requirements, simply import any python files you want to use.
 
 ---
-
 ## DOCUMENTATION
 
 What follows is a brief desctription of each python file, and the functions or classes inside.
 
 ---
-
 ### estimator.py
 Abstract Base Class that is used to inherit functions. Add methods to Override functions.
 
