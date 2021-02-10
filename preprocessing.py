@@ -43,8 +43,17 @@ def denoise(ts: pd.DataFrame, window: int) -> pd.DataFrame:
     To denoise a timeseries we perform a rolling mean calculation.
     Window size should change depending on what the user wants to do with the data.
 
-    //TODO: perhaps add different options for rolling calculations. Like use a rolling
-      median instead of the mean. 
+    Parameters
+    ----------
+    ts: pd.DataFrame
+        a pandas DataFrame contaning time series data.
+    window: int
+        an int indicating the window size of the rolling mean calculation.
+
+    Returns
+    -------
+    ts_mean: 
+        a pandas DataFrame containing the modified time series data.
     """
 
     # the on= options makes the rolling() function use the first column of data
@@ -56,16 +65,25 @@ def denoise(ts: pd.DataFrame, window: int) -> pd.DataFrame:
 def impute_missing_data(ts: pd.DataFrame, method: str) -> pd.DataFrame:
     """
     This function fills in missing data in the timeseries.
-    There are many ways to fill in blank data. We leave the choice to the user.
+    There are multiple ways to fill in blank data. We leave the choice to the user.
     options supported so far:
         - back fill: replace NaN with next known data
         - forward fill: replace NaN with last known data.
         - mean: replace NaN with the mean
         - median: replace NaN with the median
-        - mode: replace NaN with the mode
+    
+    Parameters
+    ----------
+    ts: pd.DataFrame
+        a pandas DataFrame contaning time series data.
+    method: a string
+        indicates which method the user wants to use to fill in missing data.
 
-    //TODO: Research ideas proposed by Kantz via project1 references.
-            TEST this method! Need to create MORE datasets with missing values.
+    Returns
+    -------
+    new_ts: pd.DataFrame
+        a pandas DataFrame containing the modified time series data.
+    
     """
 
     # if there is no missing data. report and return original ts
@@ -79,11 +97,9 @@ def impute_missing_data(ts: pd.DataFrame, method: str) -> pd.DataFrame:
     elif method == 'forwardfill':
         new_ts = ts.fillna(method='ffill')
     elif method == 'mean':
-        new_ts = ts.fillna(ts.mean())
+        new_ts = ts.fillna(ts.mean(numeric_only=True))
     elif method == 'median':
-        new_ts = ts.fillna(ts.median())
-    elif method == 'mode':
-        new_ts = ts.fillna(ts.mode())
+        new_ts = ts.fillna(ts.median(numeric_only=True))
     else:
         print("Method not supported")
 
@@ -93,6 +109,15 @@ def impute_outliers(ts: pd.DataFrame) -> pd.DataFrame:
     """
     Outliers are disparate data that we can treat as missing data. Use the same procedure
     as for missing data (sklearn implements outlier detection).
+
+    Parameters
+    ----------
+    ts: pd.DataFrame
+        a pandas DataFrame contaning time series data.
+
+    Returns
+    a call to impute_missing_data (with a modified ts) which returns a pd.DataFrame
+    -------
     """
 
     # generate list of z scores
@@ -103,12 +128,27 @@ def impute_outliers(ts: pd.DataFrame) -> pd.DataFrame:
         if abs(z_scores[i]) > 2:
             ts.iloc[i, 1] = np.NaN
 
+    if ts.isnull().any().any() == False:
+        print("impute_outliers: ts has no outliers.")
+        return ts
+
     # now we impute the missing data
-    return impute_missing_data(ts, 'backfill')
+    return impute_missing_data(ts, 'median')
 
 
 def longest_continuous_run(ts: pd.DataFrame) -> pd.DataFrame:
-    """Isolates the most extended portion of the time series without missing data."""
+    """
+    Isolates the most extended portion of the time series without missing data.
+
+    Parameters
+    ----------
+    ts: pd.DataFrame
+        a pandas DataFrame contaning time series data.
+
+    Returns
+    -------
+    a call to clip which returns a pd.DataFrame
+    """
 
     # the longest 
     start = 0
@@ -154,21 +194,48 @@ def clip(ts: pd.DataFrame, starting_date: int, final_date: int) -> pd.DataFrame:
     """
     This function clips the time series to the specified period's data.
 
-    // TODO: the index numbers of the returned clip are the index numbers from the
-             original ts. Might introduce some bugs, test in future.
+    Parameters
+    ----------
+    ts: pd.DataFrame
+        a pandas DataFrame contaning time series data.
+    starting_date: int
+        the starting index of the section to be clipped
+    final_date: int
+        the last index of the section to be clipped
+
+    Returns
+    -------
+    new_ts: pd.DataFrame
+        a pandas DataFrame that contains only the desired section of the original DataFrame
     """
+
+    # check to see that the starting and final are in bounds.
+    if (starting_date < 0) or starting_date>=len(ts.index):
+        print('clip error: starting_date out of bounds.')
+
+    if (final_date < 0) or final_date>=len(ts.index):
+        print('clip error: final_date out of bounds.')
 
     # The iloc pandas dataFrame method supports slicing.
     new_ts = ts.iloc[starting_date:final_date+1]
     return new_ts
 
 
-def assign_time(ts, start, increment) -> pd.DataFrame:
+def assign_time(ts: pd.DataFrame, start: str, increment: int) -> pd.DataFrame:
     """
     In many cases, we do not have the times associated with a sequence of readings.
     Start and increment represent to delta, respectively.
 
-    //TODO: implement this function.
+    Parameters
+    ----------
+    ts: pd.DataFrame
+        a pandas DataFrame contaning time series data.
+
+
+    Returns
+    -------
+    new_ts: pd.DataFrame
+        a pandas DataFrame containing the time series data with added times.
     """
 
 
@@ -177,7 +244,15 @@ def difference(ts: pd.DataFrame) -> pd.DataFrame:
     Produces a time series whose magnitudes are the differenes between consecutive elements
     in the original time series.
 
-    //TODO: implement this function.
+    Parameters
+    ----------
+    ts: pd.DataFrame
+        a pandas DataFrame contaning time series data.
+
+    Returns
+    -------
+    new_ts: pd.DataFrame
+        a pandas DataFrame containing the modified time series data.
     """
 
 
@@ -185,6 +260,16 @@ def scaling(ts: pd.DataFrame) -> pd.DataFrame:
     """
     Produces a time series whose magnitudes are scaled so that the resulting magnitudes range
     in the interval [0, 1].
+
+    Parameters
+    ----------
+    ts: pd.DataFrame
+        a pandas DataFrame contaning time series data.
+
+    Returns
+    -------
+    ts: pd.DataFrame
+        a pandas DataFrame containing the scaled time series data.
     """
 
     # create list of values
@@ -207,12 +292,32 @@ def standardize(ts: pd.DataFrame) -> pd.DataFrame:
     """
     Produces a time series whose mean is 0 and variance is 1.
 
-    //TODO: implement this function.
+    Parameters
+    ----------
+    ts: pd.DataFrame
+        a pandas DataFrame contaning time series data.
+
+    Returns
+    -------
+    new_ts: pd.DataFrame
+        a pandas DataFrame containing the standardized time series data.
     """
 
 
 def logarithm(ts: pd.DataFrame) -> pd.DataFrame:
-    """Produces a time series whose elements are the logarithm of the original elements."""
+    """
+    Produces a time series whose elements are the logarithm of the original elements.
+
+    Parameters
+    ----------
+    ts: pd.DataFrame
+        a pandas DataFrame contaning time series data.
+
+    Returns
+    -------
+    ts: pd.DataFrame
+        a pandas DataFrame containing the modified time series data.
+    """
 
     # visit each entry
     for i in range(len(ts.index)):
@@ -223,7 +328,19 @@ def logarithm(ts: pd.DataFrame) -> pd.DataFrame:
     return ts
 
 def cubic_root(ts:pd.DataFrame) -> pd.DataFrame:
-    """Produces a time series whose elements are the original elements' cubic root."""
+    """
+    Produces a time series whose elements are the original elements' cubic root.
+
+    Parameters
+    ----------
+    ts: pd.DataFrame
+        a pandas DataFrame contaning time series data.
+
+    Returns
+    -------
+    ts: pd.DataFrame
+        a pandas DataFrame containing the modified time series data.
+    """
 
     # visit each entry
     for i in range(len(ts.index)):
