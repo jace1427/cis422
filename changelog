@@ -7,3 +7,7 @@ tree.py - fixed indentation error (line 262)
 
 2/4/2021:
 csvreader.py renamed to fileIO.py
+
+2/9/2021:
+beautified mlp_model.py
+removed unittest from requirements.txt
