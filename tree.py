@@ -17,13 +17,19 @@
 #  TO DO  #
 ###########
 ##################################################
-#  - ADD TREE_STATES[] ARRAY IN WHICH TREES      #
-#  CAN BE SAVED (MAYBE DO IT IN DIFFERENT FILE)  #
-#                                                #
 #  - ADD CONNECTIVITY TO PIPELINE                #
 ##################################################
+
+#############
+## IMPORTS ##
+#############
+
 import sys
 
+import inspect
+# used to read function arguments in Tree.match function
+
+# Allows script to access functions to place into the nodes
 
 ####################
 #    NODE CLASS    #
@@ -37,16 +43,25 @@ class Node():
 
     Attributes
     ----------
-    
+
     num : int
         Number identification
-    
+
     func : function
         The Node's function
-    
+
+    input_output_type: list (of two ints)
+        Determines what type of inputs/outputs the function takes/returns
+
+    func_args : list
+        List of the arguments that wil lbe plugged into this node's function
+        Necessary since some functions have more parameters than their parent
+        node will be able to provide. This allows the user to specify those
+        arguments while initializing the node
+
     parent : Node
         Pointer to the parent Node
-    
+
     children : list[Node]
         List of pointers to children Nodes
 
@@ -55,10 +70,12 @@ class Node():
     None
     """
 
-    def __init__(self, num, func, parent=None):
+    def __init__(self, num, func, input_output_type, func_args = [], parent=None):
         self.num = num
         self.func = func
         self.parent = parent
+        self.io_type = input_output_type
+        self.func_args = func_args
         self.children = []
 
     def __repr__(self):
@@ -77,13 +94,13 @@ class Tree():
 
     Attributes
     ----------
-    
+
     root : Node
         A pointer to the root Node of the Tree
-    
+
     edit: Bool
         Bool repersenting whether or not the tree can be edited
-    
+
     ctr: int
         Abritrary number for assigning id's to the Nodes
 
@@ -97,13 +114,13 @@ class Tree():
 
     insert(func: function, parent: int) -> None:
         Creates a new node with func to be inserted as a child of parent
-    
+
     delete(node: int) -> None:
         Deletes the given Node, children are removed
-    
+
     replace(node: Node, func: function) -> None:
         Replaces the function of the given Node with func
-    
+
     traverse() -> list:
         Returns a preorder traversal of the Tree as a list
     """
@@ -146,16 +163,21 @@ class Tree():
 
         return self._searcher(target, curr)
 
-    def insert(self, func: 'function', parent=None) -> None:
+    def insert(self, func: 'function', io_type: int, func_args = [], parent=None) -> None:
         """Creates a new node with function func to be inserted
         as a child of parent
 
+        If no arg is given for parent, node will be made the root
+        of the tree
+
+        PLEASE: only attatch nodes to leaves
+
         Parameters
         ----------
-        
+
         func : function
             function for new node to have
-    
+
         parent : int
             parent of new Node, if None Node is inserted as the root
 
@@ -164,19 +186,101 @@ class Tree():
         None
         """
         if parent is not None:
+        
             parent_node = self.search(parent)
+            # find parent node
+            
             if parent_node is None:
+            
                 sys.stderr.write(f"[ERROR]: Node ({parent}) not found\n")
-                raise ValueError # or some kind of error here to signal main
+                raise ValueError  
+                # or some kind of error here to signal main
                 return
-            node = Node(self.ctr, func, parent_node)
+
+
+            node = Node(self.ctr, func,io_type, func_args, parent_node)
+            
+            if not self.match(parent_node, node):
+            # if the node does not fit the parent function
+
+                print("node cannot be attatched to targeted parent (invalid matching of args)")
+                return
+            
             self.ctr += 1
             parent_node.children.append(node)
+        
         else:
-            node = Node(self.ctr, func)
+        # If parent is not specified, we make it the root
+            
+            node = Node(self.ctr, func, io_type, func_args)
             self.ctr += 1
+            
+            if self.root != None:
+                
+                for child in self.root.children:
+                # Make our node the root's childrens' new parent
+
+                    child.parent = node
+
             self.root = node
+                
         return
+
+    def match(self, parent: Node, child: Node) -> bool:
+        """Checks if the child node can be attatched to the parent node
+        matches child output to parent input
+
+        Parameters
+        -----------
+
+        parent : Node
+            Node we want to attach child node to
+
+        child : Node
+            Node we want to attatch to parent
+
+        Returns
+        ---------
+        bool
+        """
+        
+        if parent.io_type[1] == child.io_type[0]:
+            # check that the childs output matches the functions input
+            
+            return True
+        
+        return False
+
+    def get_args(self, parent: Node, child: Node) -> list:
+        """
+        Gets function arguments the previous node does not fulfill
+
+        Parameters
+        -----------
+
+        parent : Node
+            Node we want to attach child node to
+
+        child : Node
+            Node we want to attatch to parent
+
+        Returns
+        ---------
+        list : holding the arguments for our function
+        """
+        args = []
+        # List of arguments to be added to the child function initialization
+
+        for item in inspect.signature(child.func).annotation:
+            
+            if item not in inspect.signature(parent.func).return_annotation:
+            # if the argument isn't filled out by parent's return parameter(s)
+        
+                arg = input("Please enter argument for {} : ".format(item))
+                args.append(item)
+        
+        return args
+
 
     def delete(self, node: int) -> None:
         """Deletes the given Node, children are removed
@@ -201,6 +305,7 @@ class Tree():
         ----------
         node : int
             Node to be edited
+
         func : function
             function to be inserted
 
@@ -208,13 +313,13 @@ class Tree():
         -------
         None
         """
-        
+
         node = self.search(node)
         node.func = func
         return
 
     def serialize(self, node) -> None:
-         """ Formats the tree into a string, so we can save the trees state easily
+        """Formats the tree into a string, so we can save the tree easily
 
         Parameters
         ----------
@@ -224,18 +329,21 @@ class Tree():
         Returns
         -------
         None
-        """       
-        
-        if node == None:
+        """
+        if node is None:
             return
+        
         self.string = self.string + self.root.func + self.root.num
+        
         for child in node.children:
             self.serialize(child, self.string)
+        
         self.string = self.string + ')'
+        
         return
 
     def deserialize(self, node, saved_string) -> int:
-        """ Returns the serialized string back to a tree
+        """Returns the serialized string back to a tree
 
         Parameters
         ----------
@@ -249,25 +357,24 @@ class Tree():
         -------
         int : 1 if success , 0 for failure
         """
-        
+
         string = saved_string[0]
         saved_string = saved_string[1:]
         # basically popping the string
 
-        if saved_string[0] = ')':
+        if saved_string[0] == ')':
             return 1
-        
+
         string = string + saved_string[0]
         self.string = self.string[1:]
 
-        node = Node(int(string[0]), func_list[string[1]])
         # references dictionary of functions ( keyed with letters)
+        node = Node(int(string[0]), func_list[string[1]])
 
         for child in node.children:
             if self.deserialize(child, saved_string):
                 break
         return 0
-
 
     def save_tree(self) -> None:
         """Saves the current tree state as a pre-ordered list
@@ -281,10 +388,13 @@ class Tree():
         None
         """
         self.serialize(self.root)
-        self.saved_states.append(self.string)
         # save the serialized string
-        self.string = ""
+        
+        self.saved_states.append(self.string)
         # reset the trees string for the next save
+        
+        self.string = ""
+        
         return
 
     def restore_tree(self, state_number) -> None:
@@ -298,21 +408,21 @@ class Tree():
         Returns
         ----------
         None
-        """  
-
-        self.deserialize(self.root, self.saved_state[state_number])
+        """
         # the tree is saved here from the root
+        self.deserialize(self.root, self.saved_state[state_number])
 
         return
 
 
-    def _preorder(self, curr: Node, result: list) -> list[int]:
+    def _preorder(self, curr: Node, result: list) -> list:
         """ stores the tree as a list of nodes in preorder
-            
+
         Parameters
         ----------
         curr : Node
             current node being traversed
+
         result : list
             list we store the preordering on
 
@@ -327,7 +437,7 @@ class Tree():
             for child in curr.children:
                 self._preorder(child, result)
 
-    def traverse(self) -> list[int]:
+    def traverse(self) -> list:
         """Returns a preorder traversal of the Tree as a list
 
         Parameters

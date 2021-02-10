@@ -12,10 +12,9 @@ FUNCTIONALITY AND PUBLIC FUNCTIONS WILL REMAIN THE SAME
 
 import pandas as pd
 import numpy as np
-import seaborn as sns
 import datetime
-# Use seaborn style defaults and set the default figure size
-sns.set(rc={'figure.figsize': (11, 4)})
+import csv
+from estimator import Estimator
 
 
 def csv_has_timestamps(file_name: str, sample_size: int) -> (bool, int, list):
@@ -343,4 +342,64 @@ def __process_times(raw_array: list, num_row: int):
 
 
 def read_from_file(file_name: str) -> pd.DataFrame:
+    """
+    Wrapper for csv_to_dataframe
+
+    Parameters
+    ----------
+    file_name
+
+    Returns
+    -------
+
+    """
     return csv_to_dataframe(file_name)
+
+
+def write_to_file(test_data: pd.DataFrame, estimator: Estimator, file_name: str):
+    """
+    Write the predictions from the mlp model to the output file
+    in the form of a csv with two columns (time, value)
+
+    Parameters
+    ----------
+    test_data {pandas.DataFrame}: testing split from the original data
+
+    estimator {any model with .forecast method}: estimator to make predictions with (must be trained)
+
+    output_file {str}: File name to write to.
+    - will have .csv extension
+    - will contain header based on test_data
+
+    Returns
+    -------
+    None
+    """
+
+    # we only need x_test
+    x_test, y_test = estimator.split_model_data(test_data)
+
+    # have the
+    predictions = estimator.forecast(x_test)
+
+    if predictions is None:
+        print(f"Estimator returned no forecast, has it been trained?")
+        raise RuntimeError
+
+    timestamps = test_data.loc[:, test_data.columns[0]].to_numpy()
+    timestamps = np.array(timestamps, dtype='datetime64[s]')
+
+    with open(file_name, mode="w", newline="") as output_file:
+        prediction_writer = csv.writer(output_file,
+                                       delimiter=",",
+                                       quotechar="'",
+                                       quoting=csv.QUOTE_MINIMAL)
+
+        prediction_writer.writerow([test_data.columns[0], test_data.columns[1]])
+
+        for i in range(len(timestamps)):
+            timestamp = str(timestamps[i])
+            prediction = str(round(predictions[i], 6))
+            prediction_writer.writerow([timestamp, prediction])
+
+    return

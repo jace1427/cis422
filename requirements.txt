@@ -4,5 +4,4 @@ seaborn
 statsmodels
 anaconda
 unittest
-pep8
-autopep8
+sklearn

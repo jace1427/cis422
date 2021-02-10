@@ -1,0 +1,9 @@
+2/4/2021:
+csvreader.py - added write_to_file() (PLEASE CHECK FUNCTION HEADER AND DOCSTRING)
+estimator.py - newly added base abstract class for expanding on other machine learning estimators
+mlp_model.py - added train_new_mlp_model() (CHECK FUNCTION HEADER AND DOCSTRING)
+mlp_model.py - added write_mlp_predictions_to_file() (wrapper for write_to_file())
+tree.py - fixed indentation error (line 262)
+
+2/4/2021:
+csvreader.py renamed to fileIO.py

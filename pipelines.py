@@ -13,21 +13,8 @@
 ## data (as described in Wiley reading ch 12)     ##    
 ####################################################
 
-    ###########
-    ## TO DO ##
-###################################################
-## - MAKE PIPELINE CLASS INSTEAD OF LIST (MAYBE) ##
-##                                               ##
-## - ADD FUNCTIONALITY TO functions_connenct     ##
-###################################################
-
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-import matplotlib.dates as mdates
-# from statsmodels.graphics.tsaplots import plot_pcaf, plot_acf
-from statsmodels.tsa.arima.model import ARIMA
-
+from tree import *
+from fileIO import *
 
 # data = pd.read_csv() # get timeseries data
 class Pipeline():
@@ -38,7 +25,7 @@ class Pipeline():
         # will be used as an identifier for the pipeline
 
         self.pipeline = []
-        # pipeline, a list that will execute functions sequentially
+        # pipeline, a list of nodes that will be used to execute functions sequentially
         
         self.saved_states = []
         # used for docmenting the history of the pipelines composition/formation
@@ -51,6 +38,34 @@ class Pipeline():
         #       - None
 
         self.saved_states.append(self.pipeline)
+
+    def make_pipeline(self, tree: Tree, route: list) -> None:
+        """ Creates a pipeline from a selected tree path
+
+        Parameters
+        ---------
+        tree : Tree
+            tree we select our pipeline from
+
+        route : list of ints
+            the route we take through the tree
+            each number is the index of the parent
+            node's children list which we want to 
+            travel down. 
+
+        Returns
+        --------
+        None
+
+        """
+
+        self.pipeline.append(tree.root)
+        i = 0
+
+        for entry in route:
+            self.pipeline.append(self.pipeline[i].children[entry])
+            i = i + 1
+
 
     def add_to_pipeline(self, func) -> None:
         # adds function(s) to pipeline if it can connect to the end of the pipeline
@@ -117,12 +132,15 @@ class Pipeline():
         #       - -1 , if unsuccessful
 
 
-        for function in self.pipeline: 
+        for node in self.pipeline: 
         # run the data through each function
-            
-            inter_data = function(data) 
-            # use the output of the previous function as the input for the next
-            
+            if node.func_args != []:
+            # case if there are additional args
+                inter_data = node.func(data, *node.func_args) 
+                # use the output of the previous function as the input for the next
+            else:
+                inter_data = node.func(data)
+
             data = inter_data
         
         return data
