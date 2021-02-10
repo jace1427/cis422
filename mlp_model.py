@@ -1,27 +1,60 @@
+## MLP Regressor Model
+## class data structure and script functions
+##
+## author: Evan Podrabsky
+##
+## Defined:
+## MLPModel class (inherits and overrides Estimator class)
+##  - data structure for holding an sklearn.neural_network.MLPRegressor object
+##  - parses training data for the model
+##  - parses estimation data to the model and
+##
+## Scripting functions
+##  - train_new_mlp_model()
+##  - write_mlp_predictions_to_file()
+##
+## Non-Standard-Libraries used:
+##  scikit-learn
+##  numpy
+##  pandas
+##
+
 import numpy as np
 import pandas as pd
 import sklearn.neural_network as sknn
 import copy
 from estimator import Estimator
-import fileIO
-import sys
+import fileIO import
 
 
 class MLPModel(Estimator):
     """
     Basic multilayer perceptron model for time series
+    Inherits Estimator abstract class
+
+    Overridden Estimator Methods
+    ----------------------------
+    fit()
+    forecast()
+    split_model_data()
+
+    Methods (see method docstrings for description)
+    -------
+    fit(self, x_train: np.ndarray, y_train: np.ndarray)
+    score(self, x_valid: np.ndarray, y_valid: np.ndarray) -> float
+    forecast(self, x)
+    split_model_data(self, data: pd.DataFrame) -> (np.ndarray, np.ndarray)
     """
 
-    def __init__(self, input_dimension: int, output_dimension: int,
-                 layers=(2, 2), *arguments):
+    def __init__(self, input_dimension: int, output_dimension: int, layers=(2, 2), *arguments):
         if not input_dimension or not output_dimension:
-            sys.stdout.write(f"ERROR (mlp_model.__init__()): input_dimension ")
-            sys.stdout.write("and output_dimension must both be non-zero\n")
+            print(f"ERROR (mlp_model.__init__()): input_dimension and output_dimension must both be non-zero")
             raise ValueError
 
         self.input_dimension = input_dimension
         self.output_dimension = output_dimension
         self.layers = layers
+        # only non-default parameter is random_state
         self.model = sknn.MLPRegressor(hidden_layer_sizes=layers,
                                        activation='relu',
                                        solver='adam',
@@ -90,21 +123,24 @@ class MLPModel(Estimator):
             ndarray of forecasts for given states (may have just one element)
         """
 
+        # if we're passed a numpy scalar, stick it into a 2d array
+        # so MLPRegressor.predict() will accept it as an argument
         if isinstance(x, np.int64) or isinstance(x, np.float64):
             current_state = np.ndarray((1, 1), np.int64)
             current_state[0][0] = x
             prediction = self.model.predict(current_state)
             return prediction
 
+        # if we're passed a 2D list of estimation points,
+        # arguments can be passed directly to MLPRegressor.predict
         elif isinstance(x, np.ndarray) and len(x.shape) > 1:
             prediction = self.model.predict(x)
             return prediction
 
+        # else, cannot parse, throw error
         else:
-            sys.stdout.write(f"INPUT ERROR: {repr(x)} is not an expected type"
-                             f"\nmlp_model.forecast() expects a 2D"
-                             "numpy.ndarray of numpy.int64 elements or a "
-                             "single numpy.int64\n")
+            print(f"INPUT ERROR: {repr(x)} is not an expected type\n"
+                  f"mlp_model.forecast() expects a 2D numpy.ndarray of numpy.int64 elements or a single numpy.int64")
             raise TypeError
 
     def split_model_data(self, data: pd.DataFrame) -> (np.ndarray, np.ndarray):
@@ -129,29 +165,37 @@ class MLPModel(Estimator):
             sklearn MLPRegressor model)
         """
 
+        # if the total number of columns in the data does not match
+        # the number of input and output dimensions, the data isn't
+        # compatible with the mlp model
         total_columns = len(data.columns)
-
         if self.input_dimension + self.output_dimension != total_columns:
-            sys.stdout.write(f"ERROR (MLPModel.split_model_data()): "
-                             f"{repr(data)} does not fit the input/output"
-                             "dimensions of this mlp model "
-                             f"({self.input_dimension}, "
-                             f"{self.output_dimension})\n")
+            print(f"ERROR (MLPModel.split_model_data()): {repr(data)} "
+                  f"does not fit the input/output dimensions of this mlp model "
+                  f"({self.input_dimension}, {self.output_dimension})")
             raise ValueError
 
         data_copy = copy.deepcopy(data)
 
+        # slice the input part of the data
         x_set = data_copy.loc[:, data_copy.columns[:self.input_dimension]]
 
+        # slice the output part of the data
         y_set = data_copy.loc[:, data_copy.columns[self.input_dimension:]]
 
+        # convert all time values in the set to integer ordinal times
+        # sklearn.neural_network.MLPRegressor cannot read pandas.Timestamp objects
         x_set[x_set.columns[0]] = x_set[x_set.columns[0]].map(lambda x: x.toordinal())
 
+        # if we have only one value per estimate, flatten the array
+        # else, convert to 2D numpy array
         if self.output_dimension == 1:
             y_set = y_set.to_numpy().ravel()
         else:
             y_set = y_set.to_numpy()
 
+        # convert input set to 2D numpy array
+        # MLPRegressor expects a 2D array for input regardless of # of cols
         x_set = x_set.to_numpy()
 
         return x_set, y_set
@@ -177,6 +221,7 @@ def train_new_mlp_model(train_data: pd.DataFrame, input_dimension: int,
         trained multilayer perceptron object
     """
 
+    # initialize new MLPModel object with given parameters
     mlp = MLPModel(input_dimension, output_dimension, layers)
 
     x_train, y_train = mlp.split_model_data(train_data)
