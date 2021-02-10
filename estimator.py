@@ -1,5 +1,3 @@
-import numpy as np
-
 class Estimator(object):
     """
     Abstract base class for any estimator to be used in a tree
