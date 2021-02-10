@@ -230,13 +230,34 @@ def assign_time(ts: pd.DataFrame, start: str, increment: int) -> pd.DataFrame:
     ----------
     ts: pd.DataFrame
         a pandas DataFrame contaning time series data.
+    start: str
+        a string that contains a starting date.
+    increment: int
+        an int indicating the number of hours between each timestamp.
 
 
     Returns
     -------
-    new_ts: pd.DataFrame
-        a pandas DataFrame containing the time series data with added times.
+    ts: pd.DataFrame
+        a pandas DataFrame containing the time series data with added timestamps.
     """
+
+    # store the number of times we need to generate
+    numtimes = len(ts.index)
+
+    # create string to tell date_range how many hours in between each timestamp
+    frequency = str(increment) + "H"
+
+    # create a DatetimeIndex
+    times = pd.date_range(start=start, periods=numtimes, freq=frequency)
+
+    # insert our DatetimeIndex into the DataFrame as the first column
+    ts.insert(0, 'Timestamp', times)
+
+    return ts
+
+
+
 
 
 def difference(ts: pd.DataFrame) -> pd.DataFrame:
