@@ -1,14 +1,64 @@
 1. Revision History
-2. 2: ConOps
+
+	Date			|Author		|Description
+------------------------------------------------------------------
+
+	Jan 12th, 2021 		Lannin Nakai	Spent one of the initial team meetings creating the initial SRS document, which took
+						about 1.5-2 hours. A substantional amount of the initial draft was made at this meeting.
+	
+	Jan 14th, 2021 		Riley		Added some additional use cases to section 6.1. Also converted document from googleDocs
+						onto a txt file in the bitbucket repo
+
+	Feb 9th,  2021 		Lannin Nakai	Revised the initial draft of the SRS (which contained our teams hypothetical model of 
+						our program) with the finalized SRS (which contains a description of the delivered model).
+						One of our biggest adjustments were removing the GUI component entirely from the document.
+
+	Feb 10th, 2021 		Lannin Nakai	Added formatting to final draft. Also added references.					
+	
+2. The Concept of Operations (ConOps)
+
     1.  Current system/situation
-        1. On paper calculations/hard coding specific systems
+
+        1. Investments are commitments we make to dedicate present resouces, to recieve something worth waiting for sometime later.
+	   As investments grow larger, one would think the investor's desire to ensure their success would as well. One method of 
+	   ensuring success of investments, popular in the field of economics among startups and major banks alike (libraries such
+	   as pandas were actually made with econometrics in mind), is the use of machine learning models to predict the behavior of
+	   stock(s). There is a clear hunger for data science jobs among economists, as seen by Coursera's (an online programming course)
+	   most popular course  consiting of linear regression and logistic regression (methods heavily used for ecconomics) (Coursera, 2021). 
+	   According to a 2021 study by Business Insider that utilized data from linkdin and ZipRecruiter, 75% of banks with 100-Billion+ in assests are currently using AI in
+	   their stategies (Bloomberg, 2021). Members of these institutions balance the high-level economic strategies with the low-level programs/programming
+	   that allows them to peform quantitative analysis on data (providing a type of insight to their economic strategies). If analysts
+	   had a library that abstracted the functionalities of several other libraries and the operating environment, this module would
+	   relieve the analyst of tracking information that they may not be concerned with.
         2. Real world scenario: analytics team
         3. End user who knows the math/statistics, but may not know code
+
     2.  Justification
+
+	The implementation of this module is not due to the faults of libraries such as scikitlearn and mlp when inspected individually, but
+	due to the inefficiency and conceptual complexity of using the libraries together. The aim of the provided module is to provide a quicker
+	and more intuitive way to achieve timeseries analysis utilizing multiple python libraries. This ease of use will hopefully increase the
+	number of users and the efficiency of current users. A report published by prof. Sendhil Mullainathan of Harvard and coauthors argues that
+	there are many important problems in econometrics that can be quickly solved with off-the-shelf ML methods, but further expertise in the
+	combined field of econometrics-and-CIS is necessary to solve such problems (Sendhil Mullainathan, 2016). Agreeing with Mullainathan, Stanford
+	school of business professor Susann Athey states that economist should be eager to implement ML as it would allow them to enlarge the data sets
+	and make increasingly complex extrapolations from the enlarged data sets (MIT, 2018). McAfee discusses the benfits of implementing such technology
+	with the social sciences in examining phenomena like gender/ethnicity bias in hiring. Given that the average social scientist does not have extensive
+	training in the statistical methods applied by ML, a high-level mode of interacting with these functions such as our tree library could be greatly
+	helpful in the learning curve of these users.
+
         1. Increased efficiency
         1. Increased # of users
         2. Decreased complexity of using system (less time per entry)
+
     3. Operational Features
+
+	This library will provide the user with the ability to create an n-ary tree, which is composed of nodes. Trees can be attatched to the leaf node of 
+	another tree. The user can selects paths through this tree from the root node to a leaf node, which can be saved as a pipeline. A pipeline when 
+	fed data and then executed will return transformed data. Each node holds a function, and when data is fed to a node it will pass the result of 
+	its function composed of the provided data to the next node in the pipeline (until the root is hit, in which case the result is returned to STDOUT).
+	Trees and pipelines can be saved by the user for later use in a txt file.
+
         1. Create a new tree.
         2. Add operators to the transformation tree, checking type compatibility of input/output of operators.
         3. Replace a process step with a different operator.
@@ -20,95 +70,182 @@
         9. Execute a tree.
         10. Execute a pipeline.
         11. Fork a tree. 
+
     4. User Classes
-        1. Students (learning the material) as an educational tool
-        2. Admin 
-            1. (ability to save changes to master code)
-            1. Can edit user defined operations
-            2. Take code change requests
-        3. Pro 
-            1. (switch from code to GUI, can fork
-            2. Can make code change request
-        4. Casual Viewer 
-            1. (heavy on GUI, maybe some text explaining processes)
+
+	In an economics department, with our library being used as both a research and teaching tool, the main user roles would consist of students, teachers(admins),
+	and researchers. Students are projected to use the library as a means to have the power of time-series analysis tools without needing the knowledge of how
+	to implement these functions. 
+
     5. Modes of Operation
-        1. Basic/Consumer Mode: Used by the Pro or casual user.
-        2. Developer Mode: Used by the administrator.
-        3. Education Mode: Used by teachers/students for intruction.
-    6. Operational Scenarios
-        1. Use Cases
-	1. Use case 1: solar power
-		1. Description
-			1. This use case describes how a solar panel engineer would create a transformation tree and add multiple different operation nodes to the tree.
-		2. Actors
-			1. Solar panel engineer
-		3. Preconditions
-			1. The user has file creation and write permissions on the system and has access to at least 10MB of hard drive space (subject to change)
-			2. User must have understanding of most (if not all) operations and objects being operated on in the tree.
-		4. Steps to complete task
-			1. Engineer obtains relevant data either from the system server or from another source.
-			2. The engineer gains file creation and write permissions on the system where the application will run.
-			3. The user starts up the transformation tree/pipeline software.
-			4. Creates the tree file.
-			5. Creates and adds a node for each desired data operation (operations, at this point, are all predefined).
-			6. User may test different operations/forks and charge tree structure as desired.
-			7. User defines and tests operation pipeline(s).
-			8. User saves (and exports?) transformation tree file.
-		5. Post-conditions
-			1. Engineer has a testable tree file with their defined tree structure and any pipelines that were saved.
-        2. Use case 2: educational tool
-            1. Description
-                1. When learning/managing transformation trees, it can be difficult for a learner novel to this field to understand the higher level processes. Using the GUI, students are given the ability to see how high level changes to a tree (such as exchanging operators) can affect functionality, and then bringing this knowledge to their lower level understanding of the tree (ex: coding).
-            2. Actors
-                1. Students
-                2. Teachers
-            3. Preconditions
-                1. User must have understanding of most (if not all) operations and objects being operated on in the tree
-                2. This tool is for a user with both domain knowledge and an understanding of how the objects and operations relate in real-world settings
-                3. Student has been introduced to the concept of transformation trees
-                4. A teacher or other informed person is able to help the student receive data to be fed into the program for testing/training. Although a default data set will be provided, variety and topic-specific data will likely be the most helpful.                5. 
-            4. Steps to complete task
-                1. Obtain data/use data provided
-                2. Run data through the pipeline structured by the transformation tree
-                3. Observe how tree handles the data on GUI, then looking at the code that corresponds to this handling
-                4. Student connects the code to the GUI
-                5. Student makes a change to the transformation tree on the GUI
-                6. Student views how this change affects the output (if change is valid, else the student will be given a message describing why their change is invalid).
-                7. Student connects the GUI behavior to how the code handles the data
-            5. Post-conditions
-                1. Student has now been able to understand and perform changes to a transformation tree from a high-level
-		2. Student has been able to connect this high-level understanding to the low-level representation(code)
-		3. Teacher can customize the students interaction with the transformation tree by getting to select specific data to test on
-			1. specified for domain
-			2. specified for teaching specific principles regarding tree behavior (which can be arranged using specific data)
-		4. Student was able to understand from a high-level valid/invalid changes to a transformation tree without the confusion of seeing novel code		
-3. Specific Requirements
+
+	Teachers would be able to use the library to explain pipelining of functions to create desired data, without having to dive
+	into the contents of each function. Researchers on the other hand, would be able to customize the library, add/import their own functions and perhaps even
+	make subclasses for special use cases. A similar approach could be taken by a CIS, statistis, or physics course.
+ 
+   6. Use cases
+
+	A tree implementation of a complicated process such as machine learning or AI allows for a high level (conceptual) model of the process to develop with 
+	greater ease for some students. These students would presumably have an intermediate level of statistics and python syntax under their belt. Students
+	in an economics class may be asked to develop predictive models based on time-series data (for example, the fluctuation of market activity is one of
+	the primary focuses of macro econometrics. The students could access our libraries and install the required dependencies using a docker file (or even
+	easier in my opinion, using Jupyter Notebooks or Google Colab to import the necessary libraries and executing code from that environment). The tree gives 
+	the student a high-level understanding of a function's (placement, parametters, etc) impact on the result. Besides the code of the library we designed,
+	the functions from the imported libraries should also be studied by students so they understand what is occuring during pipeline execution.
+
+ 	Having the ability to experiment with different configurations of functions on timeseries will enable studentsto quickly discover what functions provide 
+	desirable results on paticular timeseries data sets. For example, a experimenting with adding/removing leaves from a tree then executing a branch as a 
+	pipeline would be a valid form of error checking (assuming we can test that the value-range or typeof the output is correct). The student can test what
+	arrangments of functions produce valid results as opposed to which produce garbage. The significance of order operation of the functions could also be quickly
+	tested by students by swapping the positions of two nodes. An example of a lesson plan using this library would be a three-step progression:
+		
+		Familiarize student with tree/pipeline classes, available functions, useful orderings of the functions (valid pipelines)
+		
+			1) Given a list of all useful functions, use the library to create a tree that has three unique valid pipelines
+
+		Increasing difficulty, remove the list of functions
+
+			2) Repeat task 1, but now finding your own libraries for the functions
+
+		Familiarize student with low-level details of a specific part(s) of the pipeline process
+
+			3) Repeat task 1. Replace function(s) with custom made function(s)
+
+	Here we see the library can be used as a type of support for the student early on to understand the concepts behind analyzing time-series so they can
+	eventually do an analysis using custom made functions or their own pipeline/tree optimized for their uses.
+
+		Alternative assignments that can be done with trees include
+
+			- Given a tree, and a set of timeseries data of a stocks price over 60 days which is missing several days of worth of data, make a pipeline
+			  of the tree such that the data returned by the pipeline has replaced the missing data with the mean of the data.
+
+			- Same as above, but with a complete data set create a pipeline on the tree such that we examine the cubic root of each data point.
+
+	A non-academic application of this library could be to the field of solar panel energy quantity and efficiency (in storing energy) overtime.
+	
+	1. Description
+		1. This use case describes how a solar panel engineer would create a transformation tree and add multiple different operation nodes to the tree.
+	2. Actors
+		1. Solar panel engineer
+	3. Preconditions
+		1. The user has file creation and write permissions on the system and has access to at least 10MB of hard drive space (subject to change)
+		2. User must have understanding of most (if not all) operations and objects being operated on in the tree.
+	4. Steps to complete task
+		1. Engineer obtains relevant data either from the system server or from another source.
+		2. The engineer gains file creation and write permissions on the system where the application will run.
+		3. The user starts up the transformation tree/pipeline software.
+		4. Creates the tree file.
+		5. Creates and adds a node for each desired data operation (operations, at this point, are all predefined).
+		6. User may test different operations/forks and charge tree structure as desired.
+		7. User defines and tests operation pipeline(s).
+		8. User saves (and exports?) transformation tree file.
+	5. Post-conditions
+		1. Engineer has a testable tree file with their defined tree structure and any pipelines that were saved.
+
+  Specific Requirements
     1. External interfaces (inputs and outputs)
-        1. Name of item
-        2. Description of purpose
-        3. Source of input or destination of output
-            1. Sample input included
-        4. Valid ranges of inputs and output
-        5. Units of measure
-        6. Data formats
+
+       		This library could theoretically take many data types such as a pandas.DataFrame(s), single integers (to customize how funcions handle dataframes), or
+		strings as long as the correct root node is chosen. However, the intention of this library is to have the primary input of a csv file containing time-series
+		data. So we will say that the primary input of our program is a csv file containing time-series data formatted as "[YEAR]-[MONTH]-[DAY]T[TIME (IN 24:00:00 FORMAT)]",
+		[VALUE AT THAT TIME]. The purpose of this input is to provide the data necessary to execute a time-series anaylsis. The dates and values are paired together, and split into training and
+		testing sets to fuel the machine learning process. Input is sourced from the client collecting time-series data concerning their domain of intrest. For example, 
+		a solar engineer may collect data of energy stored by a set of solar panels over a 3 month period, this data set formatted as a csv as specified above could plugged into 
+		this library to peform time-series analysis. The returned data to the user would be a csv-formatted file containing the prediction made by the chosen machine learning pipeline. 
+		Although nodes producing different output types could be stored as leaves, a proper pipeline should end in returning a csv file with predictions for future values.
+		The main unit measured in our input/output of data into our system is the range of data. This would be the range (in terms of time intervals) of values provided. We 
+		must know the size of a file to properly iterate through it in the program.
+
     2. Functions
+
         1. Validity checks on the inputs
-            1. For pro user submit raw error messages
-            2. For casual user customized “friendlier messages”
+
+		Validity checks on inputs consist of:
+
+			1. Checking for a valid range when given ints and indices
+			2. Checking for valid formatting when recieving a csv file
+			3. Checking for empty values in functions that require complete data sets
+			4. Confirming valid percentages when given ints for percents
+			5. Confirming a parent node's output matches its childrens' input	
+
         2. Sequence of operations in processing inputs
+
+		The first input that will be processed is confirming that the external data (input) provided is a correctly formatted csv. The following confirmations confirm that
+		function parameters are properly filled regarding the argument types described above. Each function is checked when the user attempts to add a node to the tree (or 
+		create a tree).
+
         3. Responses to abnormal situations, including error handling and recovery
-            1. Save state after every tree operation and before every fork
+
+            	Users are able to save trees and pipelines as strings (which can be stored on a txt file). This txt file would act as a backup of trees/pipelines the user has created
+	    	in the case that any session-ending errors should occur. Other errors including invalid inputs should be handled by tree validity checking or in preprocessing.
+
         4. Relationship of outputs to inputs, including,
-            1. input/output sequences:
-            2. Formulas for input to output conversion
-    3. Usability Requirements (effectiveness/efficiency/satisfaction)
-    4. Performance requirements
-        1. Quantitative
-            1. Run time
-            2. Space complexity
-        2. Qualitative
-            1. Intuit
-            2. User test score
+
+            	Input/Output sequences consist of:
+
+			1. Input of a csv file converted to the output of a pandas.DataFrame handled by the fileIO script, in which several function transform the csv data over the course
+			   of a pipeline of functions.
+			2. Taking a pandas.DataFrame as input and returning a modified pandas.DataFrame as output. These processes exist in both preprocessing and mlp scripts. The input may
+			   also consist of integers or strings that specify how the pandas.DataFrame should be modified with the paticular function.
+			3. The mlp script will take a pandas.DataFrame as input (along with customizing arguments) and return several pandas.DataFrames which consist of training data, forecasts,
+			   and testing data. The functions may also return np.ndarrays or an MLPModel (which has class functions such as training on data).
+			4. Trees and pipelines will only be concerned of the input of functions and function parameters, ensuring that parents' output matches their children's input. The children
+			   may have some parameters that are not fulfilled by their parents return parameters but can be specified by the user when creating the node. Finally, the pipeline handles
+			   the input of a pandas.DataFrame and returns a modified pandas.DataFrame.
+
+		Inputs and outputs are connected mostly within scripts. The preprocessing script for example has several functions that take pd.DataFrame as input and return it as output, this allows
+		these functions to be easily chained or swapped for each other. The only functions excluded from this catagory are the design matrix and ts2db functions in which we are prepping the data
+		so we can create an output that can be the input for the mlp_model methods. Similarly, after we have done preprocessing and/or mlp_model method execution on our data, we can pass it to
+		the statistics_and_visualization script as a pd.DataFrame(s) so it may be plotted as a histogram, box plot, plots produced by normaility test or compute the mse, mape, and smape errors of
+		the time-series.
+
+    3. Usability Requirements
+
+		All functions other than the mlp_model methods should not take longer than 2 seconds to execute. Using web-applications such as Jupyter Notebook or Google Colab as opposed to working from
+		a local system may cause greater delays in processing speed. Visualization functions (plotting) requires a graphical interface on the users end. Graphs cannot be shown on a Linux or Unix 
+		terminal (although they can be saved by the user on file to be viewed later, although such functionality would have to be provided by the user). The user will be provided the required
+		libraries in our repo's requirements file. This installation can be automated using the repo's provided Dockerfile. 
+    4. Performance Requirements
+
+		Trees are composed of node objects, each of which can grow to size 8 bytes * 5 = 40 bytes in addition to (8 bytes * N) of storage, where N is the number of children the node saves. Luckily, 
+		trees can be serialized into strings, which will save us a lot of space when saving versions of our trees. However, the nodes of sufficiently large trees can take up a non-trivial amount 
+		of data (since we are dealing with an n-ary tree, so (8 * N) can grow very large). During computation we also have to access multiple pd.DataFrames and np.ndarrays, which can take O(N^2) to 
+		analyze for some functions and a space complexity also of O(N^2) where N is the number of entries in the dataframe (the reason for N^2 time/space complexity is storing and executin data in 
+		strucutres such as our design matrix). Producing graphs/plots can consume temporal resources due to the cost of graphics, as well as require a large amount of storage to save. Other than saving 
+		our graphs however, the space complexity of what we save outside of executing the program is relatively tiny, whereas there are significant demands on compute and storage during the execution of 
+		our program. But, none of these demands exceed the capabilities of most computers. For these reasons, the user should be able to execute this program without error on any machine that can properly 
+		execute python3+. 
+		
+    5. Software System Attributes
+
+		Reliability of our program is rooted in 1) error-checking and 2) allowing saved-states. Error-checking will prevent the user from creating invalid trees/pipelines, which once created could become
+		a monstrosity to debug as the client would likely have to go function-by-function from the root node to the leaf of their pipeline to find which node connection is causing the error. Error-checking
+		in reading the external input (csv file with time-series data) by the fileIO script prevents the possibility of faulty formatting from causing errors. These precautions save the client from having
+		to question the reliability, in respect to tree formation and input data, of their pipeline when an error occurs. Saved-states will prevent the client from losing trees or pipelines (only if the client
+		manually saves the data structure, a customization can also be made to the code such that every time a node is added the tree state is saved, and every pipeline created is saved. This can be done using
+		the save_tree and save_pipeline function in tree.py and pipelines.py respectively. This allows the client to rely on the programs saved data even outside of sessions. Unfortunately, there are no 
+		additional secuirty measures provided to the user by this program in regards to the data structures they create within it (the lack of security was due to primary modules taking priority to it). This
+		code has great portability thanks to our Dockerfile, which simply executing docker make will allow the user to import all the requirements needed to use our library. The only issue of maintainability
+		presented to this library is regarding the changing/depreciation of any libraries it is dependent on (such as pandas, numpy, scikitlearn...). All changes to imported functions from other libraries must
+		be regularly accounted for if this library is to not become depreciated. This measure has not been taken and would require appointing an individual to monitor and update the code. The repo comes equipped 
+		with test suites for nearly every script so that users are able to quickly determine if errors are due to our library or their implementation of the library. I think one of the greatest perks of this
+		library is the ease in which it can be altered. A user may import/add functions to the library (simply adding it to the requirements.txt and importing it to the corresponding files, and indexing the 
+		functions input/output type(s)) and plug them into nodes, executing the tree normally. This allows for pipelining any type of functions, not limited to those relevant to analyzing time-series. 
 4. References
+
+		Wagner, Siobahn. "Finance Needs People Who Work Well with Robots." Bloomberg.com,Bloomberg,18 Apr. 2019,
+			www.bloomberg.com/news/articles/2019-08-20/finance-needs-people-who-work-well-with-robots.	
+
+		Mason, Edward. "Why a Leading Economist Is Embracing Machine Learning." MIT Sloan,29 Oct. 2018,
+			mitsloan.mit.edu/ideas-made-to-matter/why-a-leading-economist-embracing-machine-learning
+
+		Ng, Andrew. "Machine Learning." Coursera 2016,
+			coursera.org/learn/machine-learning		
+	
 5. Acknowledgements
+		This document was written under the guidance of the SRS.docx outline provided on canvas.
+
     1. Possible future revisions
+		
+		If anyone from this group chooses to proceed with imporving this library, then perhaps they would add 1) more automated function parameter checking, 2) security for the users trees (edit/non-edit permissions)
+		3) implementing a GUI as to achieve a larger target audience (visualization reducing difficulty)
