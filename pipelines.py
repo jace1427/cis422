@@ -18,6 +18,21 @@ from fileIO import *
 
 # data = pd.read_csv() # get timeseries data
 class Pipeline():
+    """Pipeline class for executing Trees
+
+    Attributes
+    ----------
+    name : str
+        name of the pipeline
+
+    Methods
+    -------
+    save_pipeline() -> None
+    make_pipeline() -> None
+    add_to_pipeline() -> None
+    functions_connect() -> bool
+    run_pipeline() -> database or bool
+    """
 
     def __init__(self, name: str):
         # will be used as an identifier for the pipeline
@@ -32,7 +47,7 @@ class Pipeline():
         self.saved_states = []
 
     def save_pipeline(self) -> None:
-        """Saves the current pipeline to the saved states history
+        """Saves the current pipeline to the saved states history.
 
         Paramters
         ---------
@@ -46,7 +61,7 @@ class Pipeline():
         self.saved_states.append(self.pipeline)
 
     def make_pipeline(self, tree: Tree, route: list) -> None:
-        """Creates a pipeline from a selected tree path
+        """Creates a pipeline from a selected tree path.
 
         Parameters
         ----------
@@ -70,7 +85,7 @@ class Pipeline():
             i = i + 1
 
     def add_to_pipeline(self, func) -> None:
-        """Adds function(s) to pipeline, if it can connect
+        """Adds function(s) to pipeline, if it can connect.
 
         Parameters
         ----------

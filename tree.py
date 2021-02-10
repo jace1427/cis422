@@ -88,7 +88,7 @@ class Node():
 
 
 class Tree():
-    """Binary Search Tree.
+    """N-ary tree
 
     ...
 
@@ -110,19 +110,23 @@ class Tree():
     Methods
     -------
     search(target: int) -> Node or None:
-        Searches the tree for target, returns Node if found, otherwise None
+        Searches the tree for target, returns Node if found, otherwise None.
 
     insert(func: function, parent: int) -> None:
-        Creates a new node with func to be inserted as a child of parent
+        Creates a new node with func to be inserted as a child of parent.
 
     delete(node: int) -> None:
-        Deletes the given Node, children are removed
+        Deletes the given Node, children are removed.
 
     replace(node: Node, func: function) -> None:
-        Replaces the function of the given Node with func
+        Replaces the function of the given Node with func.
 
     traverse() -> list:
-        Returns a preorder traversal of the Tree as a list
+        Returns a preorder traversal of the Tree as a list.
+
+    match() -> bool
+        Checks if the child node can be attatched to the parent node matches
+        child output to parent input.
     """
 
     def __init__(self):
@@ -148,7 +152,7 @@ class Tree():
         return None
 
     def search(self, target: int) -> None or Node:
-        """Searches the tree for target, returns Node if found, otherwise None
+        """Searches the tree for target, returns Node if found, otherwise None.
 
         Parameters
         ----------
@@ -165,7 +169,7 @@ class Tree():
 
     def insert(self, func: 'function', io_type: int, func_args = [], parent=None) -> None:
         """Creates a new node with function func to be inserted
-        as a child of parent
+        as a child of parent.
 
         If no arg is given for parent, node will be made the root
         of the tree
@@ -216,7 +220,7 @@ class Tree():
 
     def match(self, parent: Node, child: Node) -> bool:
         """Checks if the child node can be attatched to the parent node
-        matches child output to parent input
+        matches child output to parent input.
 
         Parameters
         -----------
@@ -238,7 +242,7 @@ class Tree():
         return False
 
     def get_args(self, parent: Node, child: Node) -> list:
-        """Gets function arguments the previous node does not fulfill
+        """Gets function arguments the previous node does not fulfill.
 
         Parameters
         -----------
@@ -265,7 +269,7 @@ class Tree():
         return args
 
     def delete(self, node: int) -> None:
-        """Deletes the given Node, children are removed
+        """Deletes the given Node, children are removed.
 
         Parameters
         ----------
@@ -281,7 +285,7 @@ class Tree():
         return
 
     def replace(self, node: int, func: 'function') -> None:
-        """Replaces the function of the given Node with func
+        """Replaces the function of the given Node with func.
 
         Parameters
         ----------
@@ -301,7 +305,7 @@ class Tree():
         return
 
     def serialize(self, node) -> None:
-        """Formats the tree into a string, so we can save the tree easily
+        """Formats the tree into a string, so we can save the tree easily.
 
         Parameters
         ----------
@@ -325,7 +329,7 @@ class Tree():
         return
 
     def deserialize(self, node, saved_string) -> int:
-        """Returns the serialized string back to a tree
+        """Returns the serialized string back to a tree.
 
         Parameters
         ----------
@@ -358,7 +362,7 @@ class Tree():
         return 0
 
     def save_tree(self) -> None:
-        """Saves the current tree state as a pre-ordered list
+        """Saves the current tree state as a pre-ordered list.
 
         Parameters
         ----------
@@ -379,7 +383,7 @@ class Tree():
         return
 
     def restore_tree(self, state_number) -> None:
-        """Saves the current tree state as a pre-ordered list
+        """Saves the current tree state as a pre-ordered list.
 
         Parameters
         ----------
@@ -396,7 +400,7 @@ class Tree():
         return
 
     def _preorder(self, curr: Node, result: list) -> list:
-        """Stores the tree as a list of nodes in preorder
+        """Stores the tree as a list of nodes in preorder.
 
         Parameters
         ----------
@@ -417,7 +421,7 @@ class Tree():
                 self._preorder(child, result)
 
     def traverse(self) -> list:
-        """Returns a preorder traversal of the Tree as a list
+        """Returns a preorder traversal of the Tree as a list.
 
         Parameters
         ----------

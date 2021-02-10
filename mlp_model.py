@@ -28,8 +28,8 @@ from fileIO import *
 
 class MLPModel(Estimator):
     """
-    Basic multilayer perceptron model for time series
-    Inherits Estimator abstract class
+    Basic multilayer perceptron model for time series. Inherits Estimator
+    abstract class.
 
     Overridden Estimator Methods
     ----------------------------
@@ -89,7 +89,7 @@ class MLPModel(Estimator):
         self.model.fit(x_train, y_train)
 
     def score(self, x_valid: np.ndarray, y_valid: np.ndarray) -> float:
-        """Scores the model's prediction accuracy
+        """Scores the model's prediction accuracy.
 
         Parameters
         ----------
@@ -110,7 +110,7 @@ class MLPModel(Estimator):
         return self.model.score(x_valid, y_valid)
 
     def forecast(self, x):
-        """Produces a forecast for the time series's current state
+        """Produces a forecast for the time series's current state.
 
         Parameters
         ----------
@@ -148,7 +148,7 @@ class MLPModel(Estimator):
 
     def split_model_data(self, data: pd.DataFrame) -> (np.ndarray, np.ndarray):
         """Non-destructively splits a given data into sets
-        readable for this estimator
+        readable for this estimator.
 
         Parameters
         ----------
@@ -208,7 +208,7 @@ class MLPModel(Estimator):
 
 def train_new_mlp_model(train_data: pd.DataFrame, input_dimension: int,
                         output_dimension: int, layers=(5, 5)) -> MLPModel:
-    """Wrapper function for initializing and training a new mlp model
+    """Wrapper function for initializing and training a new mlp model.
 
     Parameters
     ----------
