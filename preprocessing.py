@@ -257,13 +257,17 @@ def assign_time(ts: pd.DataFrame, start: str, increment: int) -> pd.DataFrame:
     return ts
 
 
-
-
-
 def difference(ts: pd.DataFrame) -> pd.DataFrame:
     """
     Produces a time series whose magnitudes are the differenes between consecutive elements
     in the original time series.
+
+    NOTE: if a list has 10 elements, there will be 9 differences. So the resulting list will 
+    be shorter by 1. To avoid this we are proceding as follows:
+
+    The difference between the ith element and the i-1 element is whats stored.
+
+    When i=0 we just use the result from when i=1. 
 
     Parameters
     ----------
@@ -275,6 +279,22 @@ def difference(ts: pd.DataFrame) -> pd.DataFrame:
     new_ts: pd.DataFrame
         a pandas DataFrame containing the modified time series data.
     """
+
+    # initialize empty list
+    new_data = []
+
+    # populate list with difference data
+    for i in range(1, len(ts.index)):
+        diff = ts.iloc[i, 1] - ts.iloc[i-1, 1]
+        new_data.append(diff)
+
+    # insert the first value. Same as second value, see docstring.
+    new_data.insert(0, new_data[0])
+
+    # give the Value column its new data values
+    new_ts = ts.assign(Value=new_data)
+
+    return new_ts
 
 
 def scaling(ts: pd.DataFrame) -> pd.DataFrame:
@@ -320,10 +340,23 @@ def standardize(ts: pd.DataFrame) -> pd.DataFrame:
 
     Returns
     -------
-    new_ts: pd.DataFrame
+    ts: pd.DataFrame
         a pandas DataFrame containing the standardized time series data.
     """
 
+    # find the mean
+    mean = np.mean(ts['Value'])
+
+    # find the standard deviation
+    std = np.std(ts['Value'])
+
+    # visit each data entry and standardize it
+    for i in range(len(ts.index)):
+        data = ts.iloc[i, 1]
+        standardized = (data - mean)/(std)
+        ts.iloc[i, 1] = standardized
+
+    return ts
 
 def logarithm(ts: pd.DataFrame) -> pd.DataFrame:
     """
