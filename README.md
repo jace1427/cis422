@@ -35,6 +35,10 @@ Executing the command: ```docker run <anyname>``` will run the contents of test.
 
 To remove the Docker image, execute: ```docker rmi -f <anyname>```
 
+### OR
+
+install depedencies through pip or conda individually, create a file and import all from lib.py
+
 ---
 ## DOCUMENTATION
 
