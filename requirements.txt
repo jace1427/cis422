@@ -4,3 +4,6 @@ seaborn
 statsmodels
 anaconda
 sklearn
+scipy
+pep8
+autopep8
