@@ -167,7 +167,7 @@ class Tree():
 
         return self._searcher(target, curr)
 
-    def insert(self, func: 'function', io_type: int, func_args = [], parent=None) -> None:
+    def insert(self, func: 'function', io_type: int, func_args=[], parent=None) -> None:
         """Creates a new node with function func to be inserted
         as a child of parent.
 
@@ -281,6 +281,9 @@ class Tree():
         None
         """
         node = self.search(node)
+        if node is None:
+            raise ValueError
+            return
         node.parent.children.remove(node)
         return
 

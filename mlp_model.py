@@ -258,5 +258,5 @@ def write_mlp_predictions_to_file(mlp: MLPModel, test_data: pd.DataFrame,
     -------
     None
     """
-    fileIO.write_to_file(test_data, mlp, file_name)
+    write_to_file(test_data, mlp, file_name)
     return
