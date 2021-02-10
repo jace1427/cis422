@@ -1,30 +1,29 @@
-## MLP Regressor Model
-## class data structure and script functions
-##
-## author: Evan Podrabsky
-##
-## Defined:
-## MLPModel class (inherits and overrides Estimator class)
-##  - data structure for holding an sklearn.neural_network.MLPRegressor object
-##  - parses training data for the model
-##  - parses estimation data to the model and
-##
-## Scripting functions
-##  - train_new_mlp_model()
-##  - write_mlp_predictions_to_file()
-##
-## Non-Standard-Libraries used:
-##  scikit-learn
-##  numpy
-##  pandas
-##
+"""MLP Regressor Model
+class data structure and script functions
 
+author: Evan Podrabsky
+
+Classes:
+    MLPModel class (inherits and overrides Estimator class)
+        data structure for holding a sklearn.neural_network.MLPRegressor object
+        parses training data for the model
+        parses estimation data to the model
+
+Functions
+    train_new_mlp_model()
+    write_mlp_predictions_to_file()
+
+Non-Standard-Libraries used:
+    scikit-learn
+    numpy
+    pandas
+"""
 import numpy as np
 import pandas as pd
 import sklearn.neural_network as sknn
 import copy
 from estimator import Estimator
-import fileIO import
+from fileIO import *
 
 
 class MLPModel(Estimator):
@@ -38,7 +37,7 @@ class MLPModel(Estimator):
     forecast()
     split_model_data()
 
-    Methods (see method docstrings for description)
+    Methods (see method docstring for description)
     -------
     fit(self, x_train: np.ndarray, y_train: np.ndarray)
     score(self, x_valid: np.ndarray, y_valid: np.ndarray) -> float
@@ -46,9 +45,11 @@ class MLPModel(Estimator):
     split_model_data(self, data: pd.DataFrame) -> (np.ndarray, np.ndarray)
     """
 
-    def __init__(self, input_dimension: int, output_dimension: int, layers=(2, 2), *arguments):
+    def __init__(self, input_dimension: int, output_dimension: int,
+                 layers=(2, 2), *arguments):
         if not input_dimension or not output_dimension:
-            print(f"ERROR (mlp_model.__init__()): input_dimension and output_dimension must both be non-zero")
+            sys.stdout.write(f"ERROR (mlp_model.__init__()): input_dimension "
+                             "and output_dimension must both be non-zero\n")
             raise ValueError
 
         self.input_dimension = input_dimension
@@ -75,7 +76,7 @@ class MLPModel(Estimator):
         x_train : numpy.ndarray
             Training set containing date values to train with
 
-        y_train :numpy.ndarray
+        y_train : numpy.ndarray
             Training set containing actual float values for the times in
             x_train MLPRegressor uses these to make another pass over the data
             (another epoch) if some pattern convergence has not been found.
@@ -139,8 +140,10 @@ class MLPModel(Estimator):
 
         # else, cannot parse, throw error
         else:
-            print(f"INPUT ERROR: {repr(x)} is not an expected type\n"
-                  f"mlp_model.forecast() expects a 2D numpy.ndarray of numpy.int64 elements or a single numpy.int64")
+            sys.stdout.write(f"INPUT ERROR: {repr(x)} is not an expected type"
+                             f"\nmlp_model.forecast() expects a 2D"
+                             "numpy.ndarray of numpy.int64 elements or a "
+                             "single numpy.int64\n")
             raise TypeError
 
     def split_model_data(self, data: pd.DataFrame) -> (np.ndarray, np.ndarray):
@@ -170,9 +173,11 @@ class MLPModel(Estimator):
         # compatible with the mlp model
         total_columns = len(data.columns)
         if self.input_dimension + self.output_dimension != total_columns:
-            print(f"ERROR (MLPModel.split_model_data()): {repr(data)} "
-                  f"does not fit the input/output dimensions of this mlp model "
-                  f"({self.input_dimension}, {self.output_dimension})")
+            sys.stdout.write(f"ERROR (MLPModel.split_model_data()): "
+                             f"{repr(data)} does not fit the input/output"
+                             "dimensions of this mlp model "
+                             f"({self.input_dimension}, "
+                             f"{self.output_dimension})\n")
             raise ValueError
 
         data_copy = copy.deepcopy(data)
