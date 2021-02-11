@@ -135,7 +135,7 @@ write_to_file(test_data: pd.DataFrame, estimator, Estimator, file_name: str)
 ```
 > Write the predictions from the mlp model to the output file in the form of a csv with two columns (time, value).
 ### mlp_model.py
-> MLPModel: Basic multilayer perceptron model for time series. Inherits Estimator abstract class.
+MLPModel: Basic multilayer perceptron model for time series. Inherits Estimator abstract class.
 ```python
 fit(x_train: np.ndarray, y_train: np.ndarray)
 ```
@@ -152,6 +152,7 @@ forecast(x)
 split_model_data(data: pd.DataFrame)
 ```
 > Non-destructively splits a given data into sets readable for this estimator.
+
 Functions:
 ```python
 train_new_mlp_model(train_data: pd.DataFrame, input_dimension: int, output_dimension: int, layers=(5, 5))
@@ -277,6 +278,7 @@ smape(y_test: pd.DataFrame, y_forecast: pd.DataFrame)
 > Computes the SMAPE error of the two time series
 ### tree.py
 Node: A node class.
+
 Tree: N-ary tree.
 ```python
 search(target: int)
