@@ -526,8 +526,6 @@ def design_matrix(ts: pd.DataFrame, input_index: list, output_index: list) -> pd
 
         y.append(ts.iloc[output_index[i] - i - window:output_index[i] - i + 1].values)
         
-        print(x)
-        
         accum = []
         
         for j in range(len(input_index)):
