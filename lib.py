@@ -10,7 +10,7 @@ from pipelines import *
 from preprocessing import *
 from statistics_and_visualization import *
 from tree import *
-from sys import *
+import sys
 
 
 if __name__ == '__main__':

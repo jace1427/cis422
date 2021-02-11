@@ -69,8 +69,9 @@ class Pipeline():
             tree we select our pipeline from
 
         route : [int]
-            the route we take through the tree each number is the index of the
-            parent node's children list which we want to travel down.
+            The route we take through the tree. Each number is an index for the
+            list of children that the parent has. The coorsponding child will
+            be added to the Pipeline.
 
         Returns
         --------
