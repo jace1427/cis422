@@ -210,11 +210,11 @@ def clip(ts: pd.DataFrame, starting_date: int, final_date: int) -> pd.DataFrame:
     """
 
     # check to see that the starting and final are in bounds.
-    if (starting_date < 0) or starting_date>=len(ts.index):
-        print('clip error: starting_date out of bounds.')
+    if (starting_date < 0) or starting_date>=len(ts.index) or (starting_date > final_date):
+        raise IndexError("clip - starting_date out of bounds")
 
-    if (final_date < 0) or final_date>=len(ts.index):
-        print('clip error: final_date out of bounds.')
+    if final_date>=len(ts.index) or (final_date < starting_date):
+        raise IndexError("clip - final_date out of bounds")
 
     # The iloc pandas dataFrame method supports slicing.
     new_ts = ts.iloc[starting_date:final_date+1]
