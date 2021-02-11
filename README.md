@@ -58,20 +58,24 @@ We start by importing all from lib, which grants access to the library's functio
 from lib import *
 ```
 
+
 Then, Create a Tree.
 ```python
 t = Tree()
 ```
+
 
 Begin inserting Nodes.
 ```python
 t.insert(denoise, [1, 1], [5])
 ```
 
+
 The arguments for t.insert are as follows (See the docstring for more).
 ```python
 func: 'function', io_type: int, func_args=[], parent=None
 ```
+
 
 Continue inserting.
 ```python
@@ -80,10 +84,12 @@ t.insert(logarithm, [1, 1], parent=1)
 t.insert(split_data, [1, 2], func_args=[.25, .25, .5], parent=2)
 ```
 
+
 If you desire to use the MLP functionality, Create a new instance of the class MLPModel.
 ```python
 mlp = MLPModel(1, 1)
 ```
+
 
 Then insert desired mlp functions.
 ```python
@@ -91,44 +97,50 @@ t.insert(train_new_mlp_model, [1, 3], func_args=[1, 1], parent=2)
 t.insert(write_mlp_predictions_to_file, [3, 4], func_args=[data, "demo.csv"], parent=4)
 ```
 
+
 With a node to plot the data after running through the functions, the tree is finished.
 ```python
 t.insert(myplot, [3, 5], parent=4)
 ```
+
 
 Next, Create a pipeline:
 ```python
 p = Pipeline("exapmle")
 ```
 
+
 Make the Pipeline, specifying the pathway (See the docstring for more).
 ```python
 p.make_pipeline(t, [0, 0, 1, 0])
 ```
+
 
 Create a Pandas DataFrame object out of your data. In this example, the data is stored in a csv, so we use csv_to_dataframe.
 ```python
 data = csv_to_dataframe("TestData/test_data.csv")
 ```
 
+
 Run the Pipeline.
 ```python
 p.run_pipeline(data)
 ```
+
 
 Execute the code using Docker.
 ```bash
 docker build -t test .
 ```
 
+
 Run the code using Docker.
 ```bash
 docker run test
 ```
 
-The output will be saved to a csv, ./demo.csv.
 
-To remove the docker image, execute this command.
+The output will be saved to a csv, ./demo.csv.To remove the docker image, execute this command.
 ```bash
 docker rmi -f test
 ```
