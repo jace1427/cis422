@@ -541,32 +541,40 @@ def design_matrix(ts: pd.DataFrame, input_index: list,
         -----------
         design matrix : pandas.DataFrame
     """
-    window = 1
+    window = 8
+    # can be modified according to preference
+    
+    # we allocate a dataframe for storing the design matrix
+    df = pd.DataFrame(index=range(window), columns = input_index + output_index)
 
-    x = []
-    y = []
+    steps = 3
+    # can be modified according to preference
+    
+    
+    # for the number of steps specified (hard-coded in steps)
+    for i in range(steps):
+        
+        #create our training and prediction data
+        for ind in input_index:
+            train = ts.iloc[ind - window + i:ind + window + i]
+        for ind in output_index:
+            predict = ts.iloc[ind-window+i:ind + window + i]
+        
+        # variable to hold the compiled training and prediction values
+        accum = [] 
 
-    x_vals = []
-    y_vals = []
-
-    df = pd.DataFrame(index=input_index + output_index,
-                      columns=input_index + output_index)
-
-    for i in range(len(input_index)):
-
-        x.append(
-            ts.iloc[input_index[i] - i - window:input_index[i] - i].values)
-
-        y.append(ts.iloc[
-                 output_index[i] - i - window:output_index[i] - i + 1].values)
-
-        accum = []
-
-        for j in range(len(input_index)):
-            accum.append(x[j])
-        for k in range(len(output_index)):
-            df.at[i, j + k] = y[k]
-
+        # attatch the training data
+        for j in range(len(train)):
+            accum.append(train.iloc[j][1])
+        
+        # attatch the prediction data
+        for k in range(len(predict)):
+            accum.append(predict.iloc[k][1])
+        
+        # place it all in a data frame
+        for l in range(len(accum)):
+            df.iloc[i,l] = accum[l]    
+        
     return df
 
 
@@ -597,30 +605,35 @@ def design_matrix_2(ts: pd.DataFrame, mo: int, mi: int,
     Design Matrix : pd.DataFrame
     """    
     
-    start = ts.iloc[0][0]
-    middle = ts.iloc[mi-1][0]
-    end = ts.iloc[mi+mo-1][0]
-
-    window = 1
-
+    # create a dataframe object with a size that will fit the design matrix
     df = pd.DataFrame(index=range(to-ti), columns =range(mi + mo))
     
-    
+    # for every step between the starting and ending time...
     for i in range(to-ti):
         
+        # take a slice of data for both training and prediction
+        # the size of the slices are determined by the sizes of
+        # the input/output arrays (mi, mo)
         train = ts.iloc[ti + i:ti + i + mi]
         predict = ts.iloc[ti + i + mi:ti + i + mi + mo]
 
+        # variable to hold the compiled training and prediction values
         accum = [] 
 
+        # attatch the training data
         for j in range(len(train)):
             accum.append(train.iloc[j][1])
+        
+        # attatch the prediction data
         for k in range(len(predict)):
             accum.append(predict.iloc[k][1])
+        
+        # place it all in a data frame
         for l in range(len(accum)):
             df.at[i,l] = accum[l]    
     
     return df
+    
     
 
 def ts2db(input_filename: str, perc_training: float,
