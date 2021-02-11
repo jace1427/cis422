@@ -7,6 +7,7 @@ Defined: (see function docstrings for descriptions)
     - csv_has_timestamps()
     - csv_to_dataframe()
     - read_from_file()
+    - read_from_file_no_check()
     - write_to_file()
 
 Requirements:
@@ -17,6 +18,7 @@ Requirements:
         * 3 columns is assumed to have timestamps in the first column,
           time-related values which can be merged with the first columns,
           and data values in the third column
+* these requirements are not necessaru if read_from_file_no_check() is used
 
 Non-Standard-Libraries used:
     pandas
@@ -424,6 +426,24 @@ def read_from_file(file_name: str) -> pd.DataFrame:
         dataframe containing all data read from {file_name}.csv
     """
     return csv_to_dataframe(file_name)
+
+
+def read_from_file_no_check(file_name: str) -> pd.DataFrame:
+    """
+    Wrapper for pandas.read_csv().
+    Does not perform any checks of the data file.
+
+    Parameters
+    ----------
+    file_name : str
+        csv file to read from
+
+    Returns
+    -------
+    pandas.DataFrame
+        dataframe containing all data read from {file_name}.csv
+    """
+    return pd.read_csv(file_name)
 
 
 def write_to_file(test_data: pd.DataFrame, estimator: Estimator,
