@@ -27,7 +27,7 @@ from scipy import stats
 # Imports from Evan
 import sklearn
 import sklearn.model_selection
-#mport csvreader
+import fileIO
 
 # Imports from Lannin
 from sklearn.linear_model import LinearRegression
@@ -41,7 +41,8 @@ sns.set(rc={'figure.figsize': (11, 4)})
 def denoise(ts: pd.DataFrame, window: int) -> pd.DataFrame:
     """
     To denoise a timeseries we perform a rolling mean calculation.
-    Window size should change depending on what the user wants to do with the data.
+    Window size should change depending on what
+    the user wants to do with the data.
 
     Parameters
     ----------
@@ -65,7 +66,8 @@ def denoise(ts: pd.DataFrame, window: int) -> pd.DataFrame:
 def impute_missing_data(ts: pd.DataFrame, method: str) -> pd.DataFrame:
     """
     This function fills in missing data in the timeseries.
-    There are multiple ways to fill in blank data. We leave the choice to the user.
+    There are multiple ways to fill in blank data.
+    We leave the choice to the user.
     options supported so far:
         - back fill: replace NaN with next known data
         - forward fill: replace NaN with last known data.
@@ -107,8 +109,9 @@ def impute_missing_data(ts: pd.DataFrame, method: str) -> pd.DataFrame:
 
 def impute_outliers(ts: pd.DataFrame) -> pd.DataFrame:
     """
-    Outliers are disparate data that we can treat as missing data. Use the same procedure
-    as for missing data (sklearn implements outlier detection).
+    Outliers are disparate data that we can treat as missing data.
+    Use the same procedure as for missing data
+    (sklearn implements outlier detection).
 
     Parameters
     ----------
@@ -116,8 +119,9 @@ def impute_outliers(ts: pd.DataFrame) -> pd.DataFrame:
         a pandas DataFrame contaning time series data.
 
     Returns
-    a call to impute_missing_data (with a modified ts) which returns a pd.DataFrame
     -------
+    a call to impute_missing_data (with a modified ts)
+    which returns a pd.DataFrame
     """
 
     # generate list of z scores
@@ -186,11 +190,13 @@ def longest_continuous_run(ts: pd.DataFrame) -> pd.DataFrame:
         end = i
         longest = count
 
-    # return the clip of the ts with the start and end values of the longest run
+    # return the clip of the ts with the
+    # start and end values of the longest run
     return clip(ts, start, end)
 
 
-def clip(ts: pd.DataFrame, starting_date: int, final_date: int) -> pd.DataFrame:
+def clip(ts: pd.DataFrame, starting_date: int,
+         final_date: int) -> pd.DataFrame:
     """
     This function clips the time series to the specified period's data.
 
@@ -206,11 +212,14 @@ def clip(ts: pd.DataFrame, starting_date: int, final_date: int) -> pd.DataFrame:
     Returns
     -------
     new_ts: pd.DataFrame
-        a pandas DataFrame that contains only the desired section of the original DataFrame
+        a pandas DataFrame that contains only the
+        desired section of the original DataFrame
     """
 
     # check to see that the starting and final are in bounds.
-    if (starting_date < 0) or starting_date>=len(ts.index) or (starting_date > final_date):
+    if (starting_date < 0) or \
+            starting_date>=len(ts.index) or \
+            (starting_date > final_date):
         raise IndexError("clip - starting_date out of bounds")
 
     if final_date>=len(ts.index) or (final_date < starting_date):
@@ -223,8 +232,9 @@ def clip(ts: pd.DataFrame, starting_date: int, final_date: int) -> pd.DataFrame:
 
 def assign_time(ts: pd.DataFrame, start: str, increment: int) -> pd.DataFrame:
     """
-    In many cases, we do not have the times associated with a sequence of readings.
-    Start and increment represent to delta, respectively.
+    In many cases, we do not have the times associated
+    with a sequence of readings. Start and increment
+    represent to delta, respectively.
 
     Parameters
     ----------
@@ -239,7 +249,8 @@ def assign_time(ts: pd.DataFrame, start: str, increment: int) -> pd.DataFrame:
     Returns
     -------
     ts: pd.DataFrame
-        a pandas DataFrame containing the time series data with added timestamps.
+        a pandas DataFrame containing the
+        time series data with added timestamps.
     """
 
     # store the number of times we need to generate
@@ -259,11 +270,12 @@ def assign_time(ts: pd.DataFrame, start: str, increment: int) -> pd.DataFrame:
 
 def difference(ts: pd.DataFrame) -> pd.DataFrame:
     """
-    Produces a time series whose magnitudes are the differenes between consecutive elements
-    in the original time series.
+    Produces a time series whose magnitudes are the
+    differenes between consecutive elements in the original time series.
 
-    NOTE: if a list has 10 elements, there will be 9 differences. So the resulting list will 
-    be shorter by 1. To avoid this we are proceding as follows:
+    NOTE: if a list has 10 elements, there will be 9 differences.
+    So the resulting list will be shorter by 1.
+    To avoid this we are proceding as follows:
 
     The difference between the ith element and the i-1 element is whats stored.
 
@@ -299,7 +311,8 @@ def difference(ts: pd.DataFrame) -> pd.DataFrame:
 
 def scaling(ts: pd.DataFrame) -> pd.DataFrame:
     """
-    Produces a time series whose magnitudes are scaled so that the resulting magnitudes range
+    Produces a time series whose magnitudes are scaled so
+    that the resulting magnitudes range
     in the interval [0, 1].
 
     Parameters
@@ -360,7 +373,8 @@ def standardize(ts: pd.DataFrame) -> pd.DataFrame:
 
 def logarithm(ts: pd.DataFrame) -> pd.DataFrame:
     """
-    Produces a time series whose elements are the logarithm of the original elements.
+    Produces a time series whose elements are the
+    logarithm of the original elements.
 
     Parameters
     ----------
@@ -383,7 +397,8 @@ def logarithm(ts: pd.DataFrame) -> pd.DataFrame:
 
 def cubic_root(ts:pd.DataFrame) -> pd.DataFrame:
     """
-    Produces a time series whose elements are the original elements' cubic root.
+    Produces a time series whose elements are the
+    original elements' cubic root.
 
     Parameters
     ----------
@@ -405,7 +420,8 @@ def cubic_root(ts:pd.DataFrame) -> pd.DataFrame:
     return ts
 
 
-def __split_data_usage(perc_training: float, perc_valid: float, perc_test: float):
+def __split_data_usage(perc_training: float, perc_valid: float,
+                       perc_test: float):
     """
     Usage test for split_data
     perc_training, perc_valid, and perc_test should add up to 1.0
@@ -422,7 +438,8 @@ def __split_data_usage(perc_training: float, perc_valid: float, perc_test: float
     """
     total_percentage = round(perc_training + perc_valid + perc_test, 3)
     if total_percentage != 1.0:
-        print(f"ERROR: perc_training, perc_valid, and perc_test do not add up 1.0\n"
+        print(f"ERROR: perc_training, perc_valid, "
+              f"and perc_test do not add up 1.0\n"
               f"perc_training({perc_training})"
               f" + perc_valid({perc_valid})"
               f" + perc_test({perc_test}) = {total_percentage} != 1.0")
@@ -434,10 +451,11 @@ def split_data(ts: pd.DataFrame,
                perc_valid: float,
                perc_test: float) -> (pd.DataFrame, pd.DataFrame, pd.DataFrame):
     """
-    Splits a time series into training, validation, and testing according to the given
-    percentages.
-    training_set, validation_set, and test_set are unique subsets of the main set (ts)
-    which do not have any overlapping elements
+    Splits a time series into training, validation,
+    and testing according to the given percentages.
+    training_set, validation_set, and test_set are
+    unique subsets of the main set (ts) which do not
+    have any overlapping elements
 
     CALLS: clip()
 
@@ -445,20 +463,26 @@ def split_data(ts: pd.DataFrame,
     ----------
     ts - Pandas.DataFrame object representing a time series (ts)
 
-    perc_training - float percentage in range [0.0, 1.0]
-    i.e. how many elements of the main set are divided into the training set
+    perc_training : float
+        percentage in range [0.0, 1.0]
+        i.e. how many elements of the main set
+        are divided into the training set
 
-    perc_valid - float percentage in range [0.0, 1.0]
-    i.e. how many elements of the main set are divided into the validation set
+    perc_valid : float
+        percentage in range [0.0, 1.0]
+        i.e. how many elements of the main set
+        are divided into the validation set
 
-    perc_test - float percentage in range [0.0, 1.0]
-    i.e. how many elements of the main set are divided into the test set
+    perc_test : float
+        percentage in range [0.0, 1.0]
+        i.e. how many elements of the main set are divided into the test set
 
 
     Returns
     -------
-    train_set, valid_set, test_set - tuple of three separate Pandas.DataFrame objects
-    containing the three unique subsets of the main set
+    train_set, valid_set, test_set : tuple
+        three separate Pandas.DataFrame objects
+        containing the three unique subsets of the main set
     """
 
     # assert percents add up to 1.0
@@ -469,18 +493,22 @@ def split_data(ts: pd.DataFrame,
 
     # training set comprises bottom (perc_training) percentage of full set
     train_start = 0
-    if main_set_size % 2 != 0:  # if we have an odd number of elements in the main set, add 1 extra to training set
+    # if we have an odd number of elements in the main set,
+    # add 1 extra to training set
+    if main_set_size % 2 != 0:
         train_end = train_start + (round(perc_training * main_set_size))
     else:
         train_end = train_start + (round(perc_training * main_set_size) - 1)
     train_set = clip(ts, train_start, train_end)
 
-    # validation set comprises first part of the remaining percentage where training set stopped
+    # validation set comprises first part
+    # of the remaining percentage where training set stopped
     valid_start = train_end + 1
     valid_end = valid_start + (round(perc_valid * main_set_size) - 1)
     valid_set = clip(ts, valid_start, valid_end)
 
-    # test set comprises remaining percentage of the main set where validation set stopped
+    # test set comprises remaining percentage
+    # of the main set where validation set stopped
     test_start = valid_end + 1
     test_end = test_start + (round(perc_test * main_set_size) - 1)
     test_set = clip(ts, test_start, test_end)
@@ -488,24 +516,27 @@ def split_data(ts: pd.DataFrame,
     return train_set, valid_set, test_set
 
 
-def design_matrix(ts: pd.DataFrame, input_index: list, output_index: list) -> pd.DataFrame:
+def design_matrix(ts: pd.DataFrame, input_index: list,
+                  output_index: list) -> pd.DataFrame:
     """
-        The input index defines what part of the time series' history is designated to be the 
-        forcasting model's input. The forecasting task determines the output index, which indicates 
-        how many predictions are required and how distanced they are from each other (not 
-        necessarily a constant distance).
+        The input index defines what part of the time series'
+        history is designated to be the forcasting model's input.
+        The forecasting task determines the output index, which indicates
+        how many predictions are required and how distanced they
+        are from each other (not necessarily a constant distance).
 
         Parameters
         ------------
         ts : pd.DataFrame
             dataframe we read from to get our design matrix values
-        
+
         input_index : list
             list of positions in timeseries to be forecasting models input
 
         output_index : list
-            list of positions in timeseries to be forecasting models desired output
-            
+            list of positions in timeseries to be
+            forecasting models desired output
+
         Returns
         -----------
         design matrix : pandas.DataFrame
@@ -514,52 +545,56 @@ def design_matrix(ts: pd.DataFrame, input_index: list, output_index: list) -> pd
 
     x = []
     y = []
-    
+
     x_vals = []
     y_vals = []
-    
-    df = pd.DataFrame(index = input_index + output_index, columns = input_index + output_index)
-    
-    for i in range(len(input_index)):
-        
-        x.append(ts.iloc[input_index[i] - i - window:input_index[i] - i].values)
 
-        y.append(ts.iloc[output_index[i] - i - window:output_index[i] - i + 1].values)
-        
+    df = pd.DataFrame(index=input_index + output_index,
+                      columns=input_index + output_index)
+
+    for i in range(len(input_index)):
+
+        x.append(
+            ts.iloc[input_index[i] - i - window:input_index[i] - i].values)
+
+        y.append(ts.iloc[
+                 output_index[i] - i - window:output_index[i] - i + 1].values)
+
         accum = []
-        
+
         for j in range(len(input_index)):
             accum.append(x[j])
         for k in range(len(output_index)):
-            df.at[i,j+k] = y[k]
-        
+            df.at[i, j + k] = y[k]
+
     return df
 
 
-def design_matrix_2(ts: pd.DataFrame, mo: int, mi: int, to: int, ti: int) -> pd.DataFrame:
+def design_matrix_2(ts: pd.DataFrame, mo: int, mi: int,
+                    to: int, ti: int) -> pd.DataFrame:
     """
     See how well linear regressions determine the model fits
 
-        Parameters
-        -----------
-        ts : pd.DataFrame
-            pd.DataFrame holding our input and ouptut array
-    
-        mo : int
-            matrix output value
+    Parameters
+    -----------
+    ts : pd.DataFrame
+        pd.DataFrame holding our input and ouptut array
 
-        mi : int
-            matrix input value
+    mo : int
+        matrix output value
 
-        to : int
-            timestamp mo is taken at
+    mi : int
+        matrix input value
 
-        ti : int
-            timestamp mi is taken at
+    to : int
+        timestamp mo is taken at
 
-        Return
-        ----------
-        Design Matrix : pd.DataFrame
+    ti : int
+        timestamp mi is taken at
+
+    Return
+    ----------
+    Design Matrix : pd.DataFrame
     """    
     
     start = ts.iloc[0][0]
@@ -587,14 +622,76 @@ def design_matrix_2(ts: pd.DataFrame, mo: int, mi: int, to: int, ti: int) -> pd.
     
     return df
     
-      
 
-  
-
-def ts2db(input_filename: str, perc_training, perc_valid, perc_test, input_index, output_index, output_file_name):
+def ts2db(input_filename: str, perc_training: float,
+          perc_valid: float, perc_test: float, input_index: list,
+          output_index: list,
+          output_file_name: str) -> (pd.DataFrame, pd.DataFrame, pd.DataFrame):
     """
-    Combines reading a file, splitting the data, converting to database, and producing the
-        traiing databases.
+    Combines reading a file, splitting the data, converting to database,
+    and producing the training databases.
 
-    //TODO: input this function.
+    Parameters
+    ----------
+    intput_file_name : str
+        csv file to read from
+
+    perc_training : float
+        percentage in range [0.0, 1.0]
+        i.e. how many elements of the main set
+        are divided into the training set
+
+    perc_valid : float
+        percentage in range [0.0, 1.0]
+        i.e. how many elements of the main set
+        are divided into the validation set
+
+    perc_test : float
+        percentage in range [0.0, 1.0]
+        i.e. how many elements of the main set are divided into the test set
+
+    input_index : list
+        list of positions in timeseries to be forecasting models input
+
+    output_index : list
+        list of positions in timeseries to be
+        forecasting models desired output
+
+    output_file_name : str
+        csv file to write training database to
+
+    Return
+    ------
+    training_database : pandas.DataFrame,
+        Training database to be used with estimator
+
+    validation-set : pandas.DataFrame,
+        Validation set to be used with estimator
+
+    test_set : pandas.DataFrame
+        Testing set to be used with estimator
     """
+
+    # read csv file, split into train, valid, and test sets
+    data = fileIO.read_from_file(input_filename)
+    training_set, validation_set, test_set = split_data(data,
+                                                        perc_training,
+                                                        perc_valid,
+                                                        perc_test)
+
+    # get design matrix of training set based on input/output indices
+    training_database = design_matrix(training_set,
+                                      input_index,
+                                      output_index)
+
+    # pandas.DataFrame.to_csv will return None is successful
+    status = training_database.to_csv(output_file_name)
+    if status is not None:
+        sys.stdout.write(f"{output_file_name} could not be found\n")
+        raise FileNotFoundError
+    else:
+        sys.stdout.write(f"Training database written to file:"
+                         f" {output_file_name}\n")
+
+    # return tuple
+    return training_database, validation_set, test_set
