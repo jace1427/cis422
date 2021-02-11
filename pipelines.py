@@ -60,7 +60,7 @@ class Pipeline():
 
         self.saved_states.append(self.pipeline)
 
-    def make_pipeline(self, tree: Tree, route: list[int]) -> None:
+    def make_pipeline(self, tree: Tree, route: [int]) -> None:
         """Creates a pipeline from a selected tree path.
 
         Parameters
