@@ -105,4 +105,4 @@ def smape(y_test: pd.DataFrame, y_forecast: pd.DataFrame):
 
 	//TODO: implement this function.
 	"""
-	return 2.0 * np.mean(np.abs(y_forecast - y_true) / (np.abs(y_forecast) + np.abs(y_test))) * 100
+	return 2.0 * np.mean(np.abs(y_forecast - y_test) / (np.abs(y_forecast) + np.abs(y_test))) * 100
