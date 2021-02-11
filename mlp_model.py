@@ -189,8 +189,10 @@ class MLPModel(Estimator):
         y_set = data_copy.loc[:, data_copy.columns[self.input_dimension:]]
 
         # convert all time values in the set to integer ordinal times
-        # sklearn.neural_network.MLPRegressor cannot read pandas.Timestamp objects
-        x_set[x_set.columns[0]] = x_set[x_set.columns[0]].map(lambda x: x.toordinal())
+        # sklearn.neural_network.MLPRegressor
+        # cannot read pandas.Timestamp objects
+        x_set[x_set.columns[0]] = \
+            x_set[x_set.columns[0]].map(lambda x: x.toordinal())
 
         # if we have only one value per estimate, flatten the array
         # else, convert to 2D numpy array
