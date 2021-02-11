@@ -13,22 +13,11 @@
 #  the user can customize the features of their pipeline   #
 ############################################################
 
-###########
-#  TO DO  #
-###########
-##################################################
-#  - ADD CONNECTIVITY TO PIPELINE                #
-##################################################
-
 #############
 #  IMPORTS  #
 #############
 
 import sys
-
-import inspect
-# used to read function arguments in Tree.match function
-
 # Allows script to access functions to place into the nodes
 
 ####################
@@ -189,33 +178,51 @@ class Tree():
         -------
         None
         """
+        
+        # check if a parent was given
         if parent is not None:
+            
+            # find the parent node in the tree
             parent_node = self.search(parent)
-            # find parent node
+
+            # in the case an invalid parent is given, return an error
             if parent_node is None:
                 sys.stderr.write(f"[ERROR]: Node ({parent}) not found\n")
                 raise ValueError
                 return
 
+            # create a node with the information provided in function args
             node = Node(self.ctr, func, io_type, func_args, parent_node)
-            # if the node does not fit the parent function
+            
+            # if the node does not fit the parent function, return an error
             if not self.match(parent_node, node):
                 sys.stdout.write("Node cannot be attatched to targeted parent")
                 sys.stdout.write(" invalid matching of args)\n")
                 return
 
+            # increment the tree's counter for node IDs
             self.ctr += 1
+
+            # add the node in its new parent's list of children
             parent_node.children.append(node)
 
         # If parent is not specified, we make it the root
         else:
+            
+            # create a node with function args
             node = Node(self.ctr, func, io_type, func_args)
+            
+            # increment node ID counter
             self.ctr += 1
+            
             if self.root is not None:
                 # Make our node the root's childrens' new parent
+                
                 for child in self.root.children:
+                    
                     child.parent = node
             self.root = node
+        
         return
 
     def match(self, parent: Node, child: Node) -> bool:
@@ -240,9 +247,12 @@ class Tree():
             return True
 
         return False
-
+"""
+    DEPRECIATED FUNCTION (DUE TO IMPLEMENTING CODING SYSTEM)
+    THAT MAY HAVE USE LATER ON
+    
     def get_args(self, parent: Node, child: Node) -> list:
-        """Gets function arguments the previous node does not fulfill.
+        Gets function arguments the previous node does not fulfill.
 
         Parameters
         -----------
@@ -256,7 +266,7 @@ class Tree():
         Returns
         ---------
         list : holding the arguments for our function
-        """
+        
         # List of arguments to be added to the child function initialization
         args = []
 
@@ -267,6 +277,7 @@ class Tree():
                 args.append(item)
 
         return args
+"""
 
     def delete(self, node: int) -> None:
         """Deletes the given Node, children are removed.
@@ -322,7 +333,7 @@ class Tree():
         if node is None:
             return
 
-        self.string = self.string + self.root.func + self.root.num
+        self.string.append([self.root.func, self.root.num])
 
         for child in node.children:
             self.serialize(child, self.string)
@@ -353,15 +364,17 @@ class Tree():
         if saved_string[0] == ')':
             return 1
 
-        string = string + saved_string[0]
+        string.append(saved_string[0])
         self.string = self.string[1:]
 
         # references dictionary of functions ( keyed with letters)
-        node = Node(int(string[0]), func_list[string[1]])
+        node = Node(string[0][0], func_list[string[0][1])
 
         for child in node.children:
+
             if self.deserialize(child, saved_string):
                 break
+
         return 0
 
     def save_tree(self) -> None:
