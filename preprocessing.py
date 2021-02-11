@@ -488,7 +488,7 @@ def split_data(ts: pd.DataFrame,
     return train_set, valid_set, test_set
 
 
-def design_matrix(ts: pd.DataFrame, input_index: list, output_index: list) -> list:
+def design_matrix(ts: pd.DataFrame, input_index: list, output_index: list) -> pd.DataFrame:
     """
         The input index defines what part of the time series' history is designated to be the 
         forcasting model's input. The forecasting task determines the output index, which indicates 
@@ -505,30 +505,40 @@ def design_matrix(ts: pd.DataFrame, input_index: list, output_index: list) -> li
 
         output_index : list
             list of positions in timeseries to be forecasting models desired output
+            
+        Returns
+        -----------
+        design matrix : pandas.DataFrame
     """
-    window = 5
+    window = 1
 
     x = []
     y = []
-
+    
+    x_vals = []
+    y_vals = []
+    
+    df = pd.DataFrame(index = input_index + output_index, columns = input_index + output_index)
+    
     for i in range(len(input_index)):
+        
         x.append(ts.iloc[input_index[i] - i - window:input_index[i] - i].values)
+
         y.append(ts.iloc[output_index[i] - i - window:output_index[i] - i + 1].values)
-    
-    x = np.vstack(x)
-    y = np.concatenate(y)
+        
+        print(x)
+        
+        accum = []
+        
+        for j in range(len(input_index)):
+            accum.append(x[j])
+        for k in range(len(output_index)):
+            df.at[i,j+k] = y[k]
+        
+    return df
 
-    assert x.shape == (num_samples, window)
-    assert len(y) == len(input_index)
 
-    lr = LinearRegression(fit_intercept=False)
-    lr = lr.fit(x,y)
-    y_pred = lr.predict(x)
-    
-    return y_pred
-
-
-def design_matrix_2(ts: pd.DataFrame, mo: int, mi: int, to: int, ti: int):
+def design_matrix_2(ts: pd.DataFrame, mo: int, mi: int, to: int, ti: int) -> pd.DataFrame:
     """
     See how well linear regressions determine the model fits
 
@@ -554,20 +564,30 @@ def design_matrix_2(ts: pd.DataFrame, mo: int, mi: int, to: int, ti: int):
         Design Matrix : pd.DataFrame
     """    
     
-    start = ts[0][0]
-    middle = ts[mi][0]
-    end = ts[mi+mo][0]
+    start = ts.iloc[0][0]
+    middle = ts.iloc[mi-1][0]
+    end = ts.iloc[mi+mo-1][0]
 
-    window = 5
+    window = 1
 
-    for i in range(to - ti):
+    df = pd.DataFrame(index=range(to-ti), columns =range(mi + mo))
+    
+    
+    for i in range(to-ti):
         
-        full = ts.iloc[start:end]
-        train = ts.iloc[middle - i - window:middle - i]
-        predict = ts.iloc[middle - i:middle - i + 1]
+        train = ts.iloc[ti + i:ti + i + mi]
+        predict = ts.iloc[ti + i + mi:ti + i + mi + mo]
 
-    return full
+        accum = [] 
 
+        for j in range(len(train)):
+            accum.append(train.iloc[j][1])
+        for k in range(len(predict)):
+            accum.append(predict.iloc[k][1])
+        for l in range(len(accum)):
+            df.at[i,l] = accum[l]    
+    
+    return df
     
       
 
