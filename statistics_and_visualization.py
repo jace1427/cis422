@@ -3,10 +3,9 @@ Statistics and Visualization functions for Project 1 CIS 422.
 
 Authors: - Add your name if you help with something!
 		 - Riley Matthews
-		 - 
+		 - whoever did the last 3 funcs
 
 """
-
 
 # ------------------------ IMPORTS ----------------------- #
 
@@ -21,6 +20,7 @@ from statsmodels.tsa.arima.model import ARIMA
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import mean_absolute_error
 from sklearn.metrics import r2_score
+from scipy import stats
 import datetime
 # Use seaborn style defaults and set the default figure size
 sns.set(rc={'figure.figsize': (11, 4)})
@@ -32,7 +32,7 @@ def myplot(*argv):
 	"""
 	Plots one of more time series.
 
-	//TODO: Find out what "Adjust the time axis to display data according to their time indices."
+	takes either a pd.DataFrame or a list of pd.DataFrames
 	"""
 
 	# there should only be one argument
@@ -80,29 +80,25 @@ def normality_test(ts: pd.DataFrame):
 	of the data. Scipy contains the Shapiro-Wilkinson and other normality tests;
 	matplotlib implements a qqplot function.
 
-	//TODO: implement this function.
-	        figure out what it should return.
+	returns SW normality test numbers.
 	"""
+	values = ts['Value'].to_list()
+
+	sw_test = stats.shapiro(values)
+
+	return sw_test
 
 def mse(y_test: pd.DataFrame, y_forecast: pd.DataFrame):
-	"""
-	Computes the MSE error of two time series.
+	"""Computes the MSE error of two time series."""
 
-	//TODO: implement this function.
-	"""
 	return ((y_forecast - y_test)**2).mean()
 
 def mape(y_test: pd.DataFrame, y_forecast: pd.DataFrame):
-	"""
-	Computes the MAPE error of two time series
+	"""Computes the MAPE error of two time series"""
 
-	//TODO: implement this function.
-	"""
 	return np.mean(np.abs((y_forecast - y_test) / y_test)) *100
-def smape(y_test: pd.DataFrame, y_forecast: pd.DataFrame):
-	"""
-	Computes the SMAPE error of the two time series
 
-	//TODO: implement this function.
-	"""
+def smape(y_test: pd.DataFrame, y_forecast: pd.DataFrame):
+	"""Computes the SMAPE error of the two time series"""
+
 	return 2.0 * np.mean(np.abs(y_forecast - y_test) / (np.abs(y_forecast) + np.abs(y_test))) * 100
