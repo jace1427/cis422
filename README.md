@@ -132,13 +132,15 @@ Abstract Base Class that is used to inherit functions. Add methods to Override f
 Functions:
 ```python
 csv_has_timestamps(file_name: str, sample_size: int)
-```
-> Checks the if the first column of a csv file appears to contain timestamps. Refactored to include __csv_process_header functionality.
+``` 
+
+> Checks the if the first column of a csv file appears to contain timestamps. Refactored to include __csv_process_header functionality. 
 
 ```python
 csv_to_dataframe(file_name: str)
 ```
-Reads csv file, checks if the file contains a header, and passes a file pointer at the start of the data to pandas.read_csv. This prevents any headers making it into the series values.\n
+
+> Reads csv file, checks if the file contains a header, and passes a file pointer at the start of the data to pandas.read_csv. This prevents any headers making it into the series values.\n
 
 ```python
 read_from_file(file_name: str)
