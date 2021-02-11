@@ -133,7 +133,7 @@ Functions:
 ```python
 csv_has_timestamps(file_name: str, sample_size: int)
 ```
-Checks the if the first column of a csv file appears to contain timestamps. Refactored to include __csv_process_header functionality.\n
+> Checks the if the first column of a csv file appears to contain timestamps. Refactored to include __csv_process_header functionality.
 
 ```python
 csv_to_dataframe(file_name: str)
