@@ -56,6 +56,8 @@ Functions:
 
 > read_from_file(file_name: str): Wrapper for csv_to_dataframe.
 
+> read_from_file_no_check(file_name: str): Wrapper for pandas.read_csv(). Does not perform any checks of the data file.
+
 > write_to_file(test_data: pd.DataFrame, estimator: Estimator, file_name: str): Write the predictions from the mlp model to the output file in the form of a csv with two columns (time, value).
 
 ### mlp_model.py
