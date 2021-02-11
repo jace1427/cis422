@@ -22,7 +22,9 @@ This library is designed for Data Scientists, the main functionallity is as foll
 
 Install [Docker](https://www.docker.com/get-started)
 
-Run this in a terminal: ```docker build -t <anyname> .```
+Run this in a terminal: ```bash
+docker build -t <anyname> .
+```
 
 This will automatically install any dependecies and create a new build.
 
@@ -37,7 +39,38 @@ To remove the Docker image, execute: ```docker rmi -f <anyname>```
 
 #### OR
 
-install depedencies through pip or conda individually, create a file and import all from lib.py
+Install depedencies through pip or conda individually, create a file and import all from lib.py
+
+---
+## EXAMPLE
+
+What follows is a Walkthrough detailing the creation a tree, adding several nodes, then creating and executing a pipeline.
+
+We start by importing all from lib, which grants access to the library's functions and classes.
+```from lib import *```
+
+Then, Create a Tree.
+```t = Tree()```
+
+Begin inserting Nodes.
+```t.insert(denoise, [1, 1], [5])```
+The arguments for t.insert are as follows:
+```func: 'function', io_type: int, func_args=[], parent=None```
+
+Please reference the docstring of the insert function to see further details.
+
+
+We start by importing all from lib, which grants us access to the library's functions and classes.
+```from lib import *```
+
+We then Create a variable data using the function csv_to_dataframe as a initializer. csv_to_dataframe will accept your data as a csv and create a Pandas DataFrame object.
+```data = csv_to_dataframe("TestData/test_data.csv")```
+
+Now that your data is formatted correctly, initialize a new instance of the class MLPModel
+```mlp = MLPModel(1, 1)```
+
+
+
 
 ---
 ## DOCUMENTATION
